@@ -1,0 +1,87 @@
+package com.chinatelecom.pimtest.utils;
+
+import android.content.Context;
+import android.content.Intent;
+import android.os.Build;
+import android.provider.Telephony;
+import android.widget.Toast;
+
+import com.chinatelecom.pimtest.log.Log;
+
+/**
+ * Created by Shuo on 2017/12/29.
+ */
+
+public class DeviceUtils {
+
+    private static Log logger = Log.build(DeviceUtils.class);
+
+    /*
+    检测是否是默认的短信息应用SDK 4.4
+     */
+    public static boolean isDefaultMessageApp(Context context) {
+        if (Build.VERSION.SDK_INT < 19) {
+            return true;
+        }
+
+        String myPackageName = context.getPackageName();
+        String defaultSmsApp = Telephony.Sms.getDefaultSmsPackage(context);
+        logger.debug("isDefaultMessageApp myPackageName: %s ", "" + myPackageName);
+        logger.debug("isDefaultMessageApp defaultSmsApp: %s ", "" + defaultSmsApp);
+
+        if (StringUtils.isBlank(defaultSmsApp)) {
+            return true;
+        }
+        if (StringUtils.equals(myPackageName, defaultSmsApp)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static void setDefaultMessageApp(Context context) {
+
+        try {
+            Intent intent = new Intent(Telephony.Sms.Intents.ACTION_CHANGE_DEFAULT);
+            intent.putExtra(Telephony.Sms.Intents.EXTRA_PACKAGE_NAME, context.getPackageName());
+            context.startActivity(intent);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Toast.makeText(context,"该手机不支持设置默认短信应用",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    //识别手机号码运营商
+    public static String getProvidersName(String mobile, boolean des) {
+        String returnString = "";
+        if (mobile == null || mobile.trim().length() != 11) {
+            return "";
+        }
+        if (mobile.trim().substring(0, 3).equals("134") || mobile.trim().substring(0, 3).equals("135") ||
+                mobile.trim().substring(0, 3).equals("136") || mobile.trim().substring(0, 3).equals("137")
+                || mobile.trim().substring(0, 3).equals("138") || mobile.trim().substring(0, 3).equals("139")
+                || mobile.trim().substring(0, 3).equals("150") || mobile.trim().substring(0, 3).equals("151")
+                || mobile.trim().substring(0, 3).equals("152")
+                || mobile.trim().substring(0, 3).equals("157") || mobile.trim().substring(0, 3).equals("158")
+                || mobile.trim().substring(0, 3).equals("159")
+                || mobile.trim().substring(0, 3).equals("187") || mobile.trim().substring(0, 3).equals("188")) {
+            returnString = (des ? "中国" : "") + "移动";
+        }
+        if (mobile.trim().substring(0, 3).equals("130") || mobile.trim().substring(0, 3).equals("131") ||
+                mobile.trim().substring(0, 3).equals("132") || mobile.trim().substring(0, 3).equals("156")
+                || mobile.trim().substring(0, 3).equals("185") || mobile.trim().substring(0, 3).equals("186")
+                || mobile.trim().substring(0, 3).equals("155")) {
+            returnString = (des ? "中国" : "") + "联通";
+        }
+        if (mobile.trim().substring(0, 3).equals("133") || mobile.trim().substring(0, 3).equals("153") ||
+                mobile.trim().substring(0, 3).equals("180") || mobile.trim().substring(0, 3).equals("189") ||
+                mobile.trim().substring(0, 3).equals("177")|| mobile.trim().substring(0, 3).equals("199") ||
+                mobile.trim().substring(0, 3).equals("173")||mobile.trim().substring(0,3).equals("181")){
+            returnString = (des ? "中国" : "") + "电信";
+        }
+        if (returnString.trim().equals("")) {
+            returnString = "";   //未知运营商
+        }
+        return returnString;
+    }
+
+}

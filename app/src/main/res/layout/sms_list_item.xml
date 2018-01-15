@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="5dp"
+    >
+        <TextView
+            android:id="@+id/tv_phone_number"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="电话号码"
+            android:textStyle="bold"
+            android:textSize="14sp"
+            android:maxLength="20"
+            android:textColor="@color/text_black_d_color"
+            />
+
+        <TextView
+            android:id="@+id/tv_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1970/1/1"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:textColor="@color/text_black_a_color"
+            />
+        <TextView
+            android:id="@+id/tv_total_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="(1)"
+            android:layout_toLeftOf="@+id/tv_date"
+            android:layout_marginRight="5dp"
+            android:textColor="@color/text_black_a_color"/>
+        <TextView
+            android:id="@+id/tv_snippet"
+            android:layout_width="wrap_content"
+            android:layout_height="30dp"
+            android:layout_alignParentBottom="true"
+            android:layout_below="@+id/tv_phone_number"
+            android:layout_alignLeft="@+id/tv_phone_number"
+            android:text="短信内容"
+            android:layout_marginTop="10dp"
+            android:textSize="12sp"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:textColor="@color/text_black_a_color"
+            />
+
+
+</RelativeLayout>

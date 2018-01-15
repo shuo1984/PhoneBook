@@ -1,0 +1,59 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.chinatelecom.pimtest.fragement.ContactListFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/activity_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white">
+        <com.chinatelecom.pimtest.view.SlidingLinearLayout
+            android:id="@+id/slidingview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_alignParentTop="true" >
+
+            <ListView
+                android:id="@+id/contact_list"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:cacheColorHint="#000000"
+                android:divider="#ffcccccc"
+                android:fadingEdge="none"
+                android:scrollbars="none"
+                android:dividerHeight="1dp"
+                android:scrollingCache="false"
+                android:visibility="visible" />
+        </com.chinatelecom.pimtest.view.SlidingLinearLayout>
+
+        <com.chinatelecom.pimtest.view.QuickAlphabeticBar
+            android:id="@+id/fast_scroller"
+            android:layout_width="22dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="top|right|center"
+            android:layout_marginTop="0dip"
+            android:background="#6633B5E5"
+            android:scaleType="centerInside"
+            >
+        </com.chinatelecom.pimtest.view.QuickAlphabeticBar>
+
+        <TextView
+            android:id="@+id/fast_position"
+            android:layout_width="70dip"
+            android:layout_height="70dip"
+            android:layout_centerInParent="true"
+            android:layout_gravity="center_horizontal|top"
+            android:layout_margin="34dip"
+            android:background="@color/blue_light_color"
+            android:gravity="center"
+            android:padding="2dip"
+            android:textColor="@color/white"
+            android:textSize="48dip"
+            android:visibility="invisible" />
+    </RelativeLayout>
+</FrameLayout>

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/activity_message_box_list"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/pim_bg">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_width="match_parent"
+        android:background="@color/dark_blue"
+        >
+
+    </android.support.v7.widget.Toolbar>
+
+    <ListView
+        android:id="@+id/message_list"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/toolbar"
+        android:layout_above="@+id/bottom_panel"
+        android:background="#00000000"
+        android:cacheColorHint="#00000000"
+        android:choiceMode="singleChoice"
+        android:divider="@color/light_gray2"
+        android:soundEffectsEnabled="true" />
+
+    <RelativeLayout
+        android:id="@+id/bottom_panel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:padding="10dp"
+        android:background="@color/text_gray_f_color"
+        >
+        <ImageView
+            android:id="@+id/keyboard"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+
+            android:src="@mipmap/keyboard"/>
+        <EditText
+            android:id="@+id/send_text"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/keyboard"
+            android:layout_toLeftOf="@+id/send_btn"
+            android:layout_centerVertical="true"
+            android:textSize="20sp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:padding="5dp"
+            android:textColor="@color/text_black_d_color"
+            android:hint="请输入要发送的消息"
+            android:background="@drawable/bg_edittext_selector"
+            style="@style/Base.V12.Widget.AppCompat.EditText"/>
+        <Button
+            android:id="@+id/send_btn"
+            android:layout_width="72dp"
+            android:layout_height="36dp"
+            android:background="@drawable/msg_send_btn_selector"
+            android:textColor="@color/white"
+            android:text="发送"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+</RelativeLayout>
