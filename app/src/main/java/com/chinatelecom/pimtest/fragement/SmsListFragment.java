@@ -4,6 +4,7 @@ import android.content.AsyncQueryHandler;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +15,11 @@ import android.widget.ListView;
 import com.chinatelecom.pimtest.R;
 import com.chinatelecom.pimtest.activity.MessageBoxListActivity;
 import com.chinatelecom.pimtest.adapter.MessageListAdapter;
+import com.chinatelecom.pimtest.interfaces.NotificationListener;
+import com.chinatelecom.pimtest.log.Log;
 import com.chinatelecom.pimtest.manager.MessageCacheManager;
+import com.chinatelecom.pimtest.manager.SmsNotificationManager;
+import com.chinatelecom.pimtest.model.Notification;
 import com.chinatelecom.pimtest.model.SmsItem;
 import com.chinatelecom.pimtest.utils.BaseIntentUtil;
 import com.chinatelecom.pimtest.utils.DeviceUtils;
@@ -34,6 +39,9 @@ public class SmsListFragment extends Fragment {
     private List<SmsItem> dataList;
     private MessageListAdapter adapter;
     private RexseeSMS rsms;
+    private SmsChangeListener smsChangeListener;
+    private Log logger = Log.build(SmsListFragment.class);
+
 
     public SmsListFragment() {
 
@@ -50,8 +58,16 @@ public class SmsListFragment extends Fragment {
         smsList = (ListView)mView.findViewById(R.id.sms_list);
         dataList = new ArrayList<>();
         rsms = new RexseeSMS(getActivity());
+        smsChangeListener = new SmsChangeListener();
         init();
+
         return mView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        registerSmsListener();
     }
 
     @Override
@@ -97,6 +113,22 @@ public class SmsListFragment extends Fragment {
                 BaseIntentUtil.intentSysDefault(getActivity(),MessageBoxListActivity.class, map);
             }
         });
+    }
+
+    private class SmsChangeListener implements NotificationListener{
+        @Override
+        public void onChange(Notification notification) {
+            logger.debug("SmsList listen sms changed!");
+            init();
+        }
+    }
+
+    private void registerSmsListener(){
+        SmsNotificationManager.getInstance().registerListener(Notification.Event.MESSAGE_CHANGED, smsChangeListener);
+    }
+
+    private void unregisterSmsListener(){
+        SmsNotificationManager.getInstance().unregisterListener(Notification.Event.MESSAGE_CHANGED,smsChangeListener);
     }
 
 }

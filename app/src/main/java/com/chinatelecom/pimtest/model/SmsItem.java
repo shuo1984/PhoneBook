@@ -19,7 +19,11 @@ public class SmsItem {
     private String has_attachment;
     private String address;
     private int type;
+    private int smsStatus;
+
     private String body;
+    private int subId;
+
 
     public String getThreadId() {
         return threadId;
@@ -123,6 +127,26 @@ public class SmsItem {
 
     public void setType(int type) {
         this.type = type;
+    }
+
+    public int getSmsStatus() {
+        return smsStatus;
+    }
+
+    public void setSmsStatus(int smsStatus) {
+        this.smsStatus = smsStatus;
+    }
+
+    public int getSubId() {
+        return subId;
+    }
+
+    public void setSubId(int subId) {
+        this.subId = subId;
+    }
+
+    public SmsItem(){
+
     }
 
     public SmsItem(String threadId, String msgCount, String msgSnippet) {

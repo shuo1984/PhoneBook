@@ -42,7 +42,7 @@ public class HomeActivity extends FragmentActivity implements ViewPager.OnPageCh
     //初始化页面数据
     private void initPagerData(){
         ArrayList<Fragment> pages=new ArrayList<Fragment>();
-        String[] titls={"通话记录","联系人","短信","我的"};
+        String[] titls={"拨号","联系人","短信","我的"};
         pages.add(new CallLogListFragment());
         pages.add(new ContactListFragment());
         pages.add(new SmsListFragment());

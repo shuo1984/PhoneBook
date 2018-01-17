@@ -54,6 +54,8 @@
             android:textColor="@color/text_black_d_color"
             android:hint="请输入要发送的消息"
             android:background="@drawable/bg_edittext_selector"
+            android:cursorVisible="true"
+            android:textCursorDrawable="@null"
             style="@style/Base.V12.Widget.AppCompat.EditText"/>
         <Button
             android:id="@+id/send_btn"

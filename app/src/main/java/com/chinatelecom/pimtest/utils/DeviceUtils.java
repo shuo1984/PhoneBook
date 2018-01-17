@@ -1,9 +1,12 @@
 package com.chinatelecom.pimtest.utils;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.provider.Telephony;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.chinatelecom.pimtest.log.Log;
@@ -82,6 +85,40 @@ public class DeviceUtils {
             returnString = "";   //未知运营商
         }
         return returnString;
+    }
+
+    public static String phoneReplaceAll(String str) {
+        if (StringUtils.isEmpty(str)) {
+            return str;
+        }
+        str = str.trim().replaceAll(" ", "");
+        str = str.replaceAll(" ","");
+        str = str.replaceAll(" ","");
+        str = str.replaceAll(" ","");
+        str = str.replaceAll("  ", "");
+        str = StringUtils.replaceChars(str, "-", "");
+        str = StringUtils.replaceChars(str, "(", "");
+        str = StringUtils.replaceChars(str, ")", "");
+        return str;
+    }
+
+    //收缩软键盘
+    @TargetApi(Build.VERSION_CODES.CUPCAKE)
+    public static void hideKeyBoard(Context context, EditText editText) {
+        if (editText == null) {
+            return;
+        }
+        InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+    }
+
+    @TargetApi(Build.VERSION_CODES.CUPCAKE)
+    public static void showKeyBoard(Context context, EditText editText) {
+        if (editText == null) {
+            return;
+        }
+        InputMethodManager in = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+        in.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
     }
 
 }

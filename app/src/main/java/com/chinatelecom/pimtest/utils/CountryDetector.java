@@ -51,21 +51,21 @@ public class CountryDetector {
         String result = null;
         if (isNetworkCountryCodeAvailable()) {
             result = getNetworkBasedCountryIso();
-            Log.d(TAG," getNetworkBasedCountryIso");
+           // Log.d(TAG," getNetworkBasedCountryIso");
         }
         if (TextUtils.isEmpty(result)) {
             result = getSimBasedCountryIso();
-            Log.d(TAG,"getSimBasedCountryIso");
+           // Log.d(TAG,"getSimBasedCountryIso");
         }
         if (TextUtils.isEmpty(result)) {
             result = getLocaleBasedCountryIso();
-            Log.d(TAG,"getLocaleBasedCountryIso");
+            //Log.d(TAG,"getLocaleBasedCountryIso");
         }
         if (TextUtils.isEmpty(result)) {
             result = DEFAULT_COUNTRY_ISO;
-            Log.d(TAG,"DEFAULT_COUNTRY_ISO");
+           // Log.d(TAG,"DEFAULT_COUNTRY_ISO");
         }
-        Log.d(TAG," result ==  " + result);
+        //Log.d(TAG," result ==  " + result);
         return result.toUpperCase(Locale.US);
     }
 

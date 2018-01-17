@@ -50,4 +50,6 @@ dependencies {
     implementation files('libs/carrier-1.9.jar')
     implementation files('libs/geocoder-2.9.jar')
     implementation files('libs/libphonenumber-8.8.8.jar')
+    compile 'com.teprinciple:updateapputils:1.3'
+    compile 'com.liulishuo.filedownloader:library:1.3.0'
 }
