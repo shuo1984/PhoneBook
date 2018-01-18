@@ -1,6 +1,7 @@
 package com.chinatelecom.pimtest.activity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -15,6 +16,7 @@ import com.chinatelecom.pimtest.fragement.CallLogListFragment;
 import com.chinatelecom.pimtest.fragement.ContactListFragment;
 import com.chinatelecom.pimtest.fragement.PersonalCenterFragment;
 import com.chinatelecom.pimtest.fragement.SmsListFragment;
+import com.chinatelecom.pimtest.service.PhoneBookService;
 import com.chinatelecom.pimtest.view.PagerSlidingTabStrip;
 
 import java.util.ArrayList;

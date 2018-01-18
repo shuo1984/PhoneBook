@@ -108,4 +108,49 @@ public class MessageManager extends BaseManager{
         });
     }
 
+    public long updateSMSBox(SmsItem info) {
+    /*    logger.debug("update messagebox with info Msgid: %d, content:%s, Stauts:%d, Type:%d",
+                info.getId(), info.getBody(), info.getSmsStatus().getValue(), info.getSmsType().getValue());*/
+        try {
+            ContentValues values = new ContentValues();
+
+            // 插入或更新短信库
+            if ("0".equals(info.getMessageId())) {
+                // 发送号码
+                values.put("address", info.getAddress());
+                // 发送内容
+                values.put("body", info.getBody());
+                // 发送时间
+                values.put("date", System.currentTimeMillis());
+                // 阅读状态   0:未读， 1:已读
+                values.put("read", "1".equals(info.getRead()) ? 1 : 0);
+                // 类型：0:All 1:INBOX，2:SENT 3:DRAFT 4:OUTBOX 5:FAILED 6:QUEUED
+                values.put("type", info.getType());
+                //状态: -1:接收，0:complete, 32:pending, 64:failed
+                values.put("status", info.getSmsStatus());
+               /* if (Device.isDualSimSupport()) {
+                    //双卡标识
+                    values.put(deviceFactory.GetSmsSubIdColumnName(), info.getSubId());
+                }*/
+                //protocol => 协议 0 SMS_RPOTO, 1 MMS_PROTO
+                // values.put("protocal",info.getType());
+                long shortMessageId = ContentUris.parseId(contentResolver.insert(IConstant.Message.MESSAGE_URI, values));
+                logger.debug("新建短信shortMessageId=%d", shortMessageId);
+                info.setMessageId(String.valueOf(shortMessageId));
+            } else {
+                // 类型：0:All 1:INBOX，2:SENT 3:DRAFT 4:OUTBOX 5:FAILED 6:QUEUED
+                values.put("type", info.getType());
+                //状态: -1:接收，0:complete, 32:pending, 64:failed
+                values.put("status", info.getSmsStatus());
+                contentResolver.update(ContentUris.withAppendedId(IConstant.Message.MESSAGE_URI, Long.parseLong(info.getMessageId())),
+                        values, null, null);
+            }
+
+        } catch (Exception e) {
+            logger.error("%s", e.getMessage());
+        }
+        return Long.parseLong(info.getMessageId());
+    }
+
+
 }

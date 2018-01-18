@@ -15,9 +15,12 @@ import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
 
 import com.chinatelecom.pimtest.config.IConstant;
+import com.chinatelecom.pimtest.log.Log;
 import com.chinatelecom.pimtest.manager.SmsNotificationManager;
 import com.chinatelecom.pimtest.model.Notification;
 import com.chinatelecom.pimtest.receiver.ShortMessageReceiver;
+
+import java.util.logging.Logger;
 
 /**
  * Created by Shuo on 2018/1/17.
@@ -28,6 +31,7 @@ public class PhoneBookService extends Service {
     private SmsNotificationManager smsNotificationManager = SmsNotificationManager.getInstance();
 
     private Handler handler = new Handler(Looper.getMainLooper());
+    private Log logger = Log.build(PhoneBookService.class);
 
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     public enum ContentType {
@@ -49,9 +53,19 @@ public class PhoneBookService extends Service {
 
     @Override
     public void onCreate() {
+        logger.debug("PhoneBookService OnCreate start====");
         super.onCreate();
         registerContentObserver();
         receiveMessage();
+        logger.debug("PhoneNookService OnCreate finish===");
+
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        logger.debug("PhoneBookService onStartCommand====");
+        return super.onStartCommand(intent, flags, startId);
+
     }
 
     private void registerContentObserver() {
@@ -92,7 +106,7 @@ public class PhoneBookService extends Service {
         intentFilter.addAction("android.provider.Telephony.SMS_RECEIVED2");
         intentFilter.addAction("android.provider.Telephony.SMS_DELIVER_ACTION");
         intentFilter.addAction("android.provider.Telephony.SMS_DELIVER");
-        PhoneBookService.this.registerReceiver(shortMessageReceiver, intentFilter);
+        registerReceiver(shortMessageReceiver, intentFilter);
     }
 
     @Nullable
@@ -106,21 +120,5 @@ public class PhoneBookService extends Service {
         super.onDestroy();
     }
 
-    class SmsObserver extends ContentObserver{
 
-        /**
-         * Creates a content observer.
-         *
-         * @param handler The handler to run {@link #onChange} on, or null if none.
-         */
-        public SmsObserver(Handler handler) {
-            super(handler);
-        }
-
-        @Override
-        public void onChange(boolean selfChange) {
-            super.onChange(selfChange);
-
-        }
-    }
 }

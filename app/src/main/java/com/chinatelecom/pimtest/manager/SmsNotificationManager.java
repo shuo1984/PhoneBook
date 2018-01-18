@@ -34,33 +34,34 @@ public class SmsNotificationManager extends NotificationManager<SmsItem> {
     @Override
     public void registerListener(Notification.Event event,NotificationListener listener) {
         logger.debug("registerListener for event:"+event.toString()+" start");
-        if(listenerColloections==null){
-            logger.debug("listenerColloections init!");
-            listenerColloections = new HashMap<>();
+        if(listenerCollections ==null){
+            logger.debug("listenerCollections init!");
+            listenerCollections = new HashMap<>();
         }
-        if(!listenerColloections.containsKey(event)){
-            logger.debug("listenerColloections contain event!");
+        if(!listenerCollections.containsKey(event)){
+            logger.debug("listenerCollections contain event!");
             List<NotificationListener> listeners = new ArrayList<>();
             listeners.add(listener);
-            listenerColloections.put(event,listeners);
+            listenerCollections.put(event,listeners);
         }else{
-            logger.debug("listenerColloections not contain event!");
-            listenerColloections.get(event).add(listener);
+            logger.debug("listenerCollections not contain event!");
+            listenerCollections.get(event).add(listener);
         }
         logger.debug("registerListener done!");
     }
 
     @Override
     public void unregisterListener(Notification.Event event, NotificationListener listener) {
-        if(listenerColloections!=null && listenerColloections.containsKey(event)){
-            listenerColloections.get(event).remove(listener);
+        if(listenerCollections !=null && listenerCollections.containsKey(event)){
+            listenerCollections.get(event).remove(listener);
         }
     }
 
     @Override
     public void notifyChange(Notification.Event event, SmsItem smsItem) {
-        if(listenerColloections!=null && listenerColloections.size()>0 &&listenerColloections.containsKey(event)){
-            for(NotificationListener listener : listenerColloections.get(event)){
+        logger.debug("notify change [" + event.toString() + "]");
+        if(listenerCollections !=null && listenerCollections.size()>0 && listenerCollections.containsKey(event)){
+            for(NotificationListener listener : listenerCollections.get(event)){
                 Notification notification = new Notification(event,smsItem);
                 listener.onChange(notification);
             }

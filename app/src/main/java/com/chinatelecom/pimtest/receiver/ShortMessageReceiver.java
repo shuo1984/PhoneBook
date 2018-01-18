@@ -1,19 +1,19 @@
 package com.chinatelecom.pimtest.receiver;
 
 import android.app.Activity;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.SmsMessage;
 import android.widget.Toast;
+
 import com.chinatelecom.pimtest.config.IConstant;
 import com.chinatelecom.pimtest.log.Log;
+import com.chinatelecom.pimtest.manager.MessageManager;
 import com.chinatelecom.pimtest.manager.NotificationManager;
 import com.chinatelecom.pimtest.manager.SmsNotificationManager;
 import com.chinatelecom.pimtest.model.Notification;
@@ -26,13 +26,19 @@ import com.chinatelecom.pimtest.utils.DeviceUtils;
 
 public class ShortMessageReceiver extends BroadcastReceiver {
     public static final String SMS_RECEIVED = "android.provider.Telephony.SMS_RECEIVED";
+    public static final String SMS_DELIVER = "android.provider.Telephony.SMS_DELIVER";
     private Log logger = Log.build(ShortMessageReceiver.class);
     private NotificationManager notificationManager;
+    private MessageManager messageManager = new MessageManager();
     @Override
     public void onReceive(Context context, Intent intent) {
+        logger.debug("ShortMessageReceiver onReceive==== action:" + intent.getAction());
+        logger.debug("API Version===" + Build.VERSION.SDK_INT);
+        logger.debug("IsDefaultSmsApp:" + DeviceUtils.isDefaultMessageApp(context));
         Cursor cursor = null;
         try {
-            if (SMS_RECEIVED.equals(intent.getAction())) {
+            if (SMS_RECEIVED.equals(intent.getAction())|| SMS_DELIVER.equals(intent.getAction())) {
+
                 if(Build.VERSION.SDK_INT>=19) {
                     if (DeviceUtils.isDefaultMessageApp(context)) {
                         logger.debug("Message received.......");
@@ -88,15 +94,36 @@ public class ShortMessageReceiver extends BroadcastReceiver {
                 String smsToast = "New SMS received from : "
                         + msgAddress + "\n'"
                         + msgBody + "'";
-                Toast.makeText(context, smsToast, Toast.LENGTH_LONG)
-                        .show();
+                Toast.makeText(context, smsToast, Toast.LENGTH_LONG).show();
                 logger.debug("message from: " + msgAddress + ", message body: " + msgBody
                         + ", message date: " + msgDate);
+                long id = addSmsToDB(msgAddress, msgBody, msgDate);
             }
         }
-        cursor = context.getContentResolver().query(Uri.parse("content://sms"), new String[] { "_id", "address", "read", "body", "date" }, "read = ? ", new String[] { "0" }, "date desc");
+
+
+       /* cursor = context.getContentResolver().query(Uri.parse("content://sms"), new String[] { "_id", "address", "read", "body", "date" }, "read = ? ", new String[] { "0" }, "date desc");
         if (null == cursor){
             return;
-        }
+        }*/
     }
+
+    private long addSmsToDB(String number, String content, Long time) {
+        SmsItem mi = new SmsItem();
+        mi.setMessageId("0");
+        mi.setRead("0");
+        mi.setAddress(number);
+        mi.setBody(content);
+        mi.setDate(time);
+        mi.setType(IConstant.Message.SMS_MESSAGE_TYPE_INBOX);
+        mi.setSmsStatus(IConstant.Message.SMS_STATUS_COMPLETE);
+
+      /*  if(Device.isDualSimSupport()){
+            mi.setSubId(smsSubId);
+        }*/
+
+        long id = messageManager.updateSMSBox(mi);
+        return id;
+    }
+
 }

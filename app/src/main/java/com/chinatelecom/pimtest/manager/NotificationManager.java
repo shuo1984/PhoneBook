@@ -12,11 +12,19 @@ import java.util.Map;
 
 public abstract class NotificationManager<T> {
 
-    protected Map<Notification.Event,List<NotificationListener>> listenerColloections;
+    protected Map<Notification.Event,List<NotificationListener>> listenerCollections;
 
     public abstract void registerListener(Notification.Event event, NotificationListener listener);
 
     public abstract void unregisterListener(Notification.Event event, NotificationListener listener);
 
     public abstract void notifyChange(Notification.Event event, T t);
+
+    public Map<Notification.Event,List<NotificationListener>> getListenerColloections(){
+        return listenerCollections;
+    }
+
+    public int getListenerCollectionCapacity(){
+        return listenerCollections.size();
+    }
 }

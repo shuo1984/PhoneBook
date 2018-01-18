@@ -6,6 +6,7 @@ import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -13,6 +14,7 @@ import android.widget.Toast;
 
 import com.chinatelecom.pimtest.R;
 import com.chinatelecom.pimtest.config.IConstant;
+import com.chinatelecom.pimtest.log.Log;
 import com.chinatelecom.pimtest.service.PhoneBookService;
 import com.chinatelecom.pimtest.sqlite.SqliteTemplateFactory;
 import com.zhy.m.permission.MPermissions;
@@ -23,15 +25,13 @@ import java.util.List;
 
 public class LaunchActivity extends Activity {
     private SqliteTemplateFactory sqliteTemplateFactory;
+    private Log logger = Log.build(LaunchActivity.class);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_launch);
         requestPermission();
-        if (!isServiceRunning(this, PhoneBookService.class.getName())) {
-            startService(new Intent(LaunchActivity.this, PhoneBookService.class));
-        }
     }
 
     private void requestPermission() {
@@ -59,13 +59,18 @@ public class LaunchActivity extends Activity {
     @PermissionGrant(IConstant.Permissions.REQ_CODE_ALL)
     public void requestAllPermissionSuccess(){
         Toast.makeText(LaunchActivity.this,"权限申请成功!",Toast.LENGTH_SHORT).show();
+
+        logger.debug("check phonebook service and start service");
+
+        startService(new Intent(LaunchActivity.this, PhoneBookService.class));
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 startActivity(new Intent(LaunchActivity.this,HomeActivity.class));
+                finish();
             }
         };
-
         new Handler().postDelayed(runnable,3000);
     }
 

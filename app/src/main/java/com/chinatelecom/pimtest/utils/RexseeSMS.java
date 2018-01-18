@@ -34,8 +34,7 @@ public class RexseeSMS {
             "date", // 4
             "body", // 5
             "read", // 6; 0:not read 1:read; default is 0
-            "type", // 7; 0:all 1:inBox 2:sent 3:draft 4:outBox 5:failed
-            // 6:queued
+            "type", // 7; 0:all 1:inBox 2:sent 3:draft 4:outBox 5:failed 6:queued
             "service_center" // 8
     };
     public static String[] THREAD_COLUMNS = new String[] { "thread_id",
@@ -141,10 +140,14 @@ public class RexseeSMS {
                         cursor.getString(1), cursor.getString(2));
                 list.add(mmt);
             }
-            cursor.close();
+
             return list;
         } catch (Exception e) {
             return list;
+        }finally {
+            if(cursor!=null && !cursor.isClosed()) {
+                cursor.close();
+            }
         }
     }
 

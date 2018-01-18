@@ -73,6 +73,11 @@
                 <action android:name="com.chinatelecom.pimtest.service.RemoteService" />
             </intent-filter>
         </service>
+
+        <service android:name=".service.PhoneBookService"
+                    android:enabled="true">
+        </service>
+
         <service
             android:name=".service.HeadlessSmsSendService"
             android:exported="true"
@@ -91,18 +96,18 @@
 
         <receiver
             android:name=".receiver.ShortMessageReceiver"
+            android:enabled="true"
             android:permission="android.permission.BROADCAST_SMS">
             <intent-filter android:priority="2147483647">
-
-                <action android:name="android.provider.Telephony.SMS_DELIVER" />
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <action android:name="android.provider.Telephony.SMS_RECEIVED2" />
                 <action android:name="android.provider.Telephony.SMS_DELIVER_ACTION" />
+                <action android:name="android.provider.Telephony.SMS_DELIVER" />
             </intent-filter>
-            <intent-filter android:priority="2147483647">
+         <!--   <intent-filter android:priority="2147483647">
                 <action android:name="ACTION.SMS_SENT" />
-            </intent-filter>
+            </intent-filter>-->
         </receiver>
 
         <receiver

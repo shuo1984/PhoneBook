@@ -91,7 +91,7 @@ public class SmsListFragment extends Fragment {
             @Override
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
-                if(dataList.size()>0){
+                if(dataList!=null && dataList.size()>0){
                     setAdapter(dataList);
                 }
             }
@@ -119,7 +119,11 @@ public class SmsListFragment extends Fragment {
         @Override
         public void onChange(Notification notification) {
             logger.debug("SmsList listen sms changed!");
-            init();
+            try {
+                init();
+            }catch (Exception e){
+                e.printStackTrace();
+            }
         }
     }
 
