@@ -180,7 +180,10 @@ public class IConstant {
         public static final int REQ_CODE_CONTACT = 33;
         public static final int REQ_CODE_SMS = 44;
         public static final int REQ_CODE_CALL_LOG = 55;
+        public static final int REQ_CODE_EXTERNAL_STORAGE = 66;
     }
 
-
+    public interface API{
+        public static final String updateApi = "http://api.ctsms.cn/api/phonebook/update.php";
+    }
 }

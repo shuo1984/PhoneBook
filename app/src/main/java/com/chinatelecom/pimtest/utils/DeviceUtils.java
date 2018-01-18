@@ -3,6 +3,8 @@ package com.chinatelecom.pimtest.utils;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Telephony;
 import android.view.inputmethod.InputMethodManager;
@@ -119,6 +121,16 @@ public class DeviceUtils {
         }
         InputMethodManager in = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         in.showSoftInput(editText, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    public static String getVersionName(Context context) throws Exception
+    {
+        // 获取packagemanager的实例
+        PackageManager packageManager = context.getPackageManager();
+        // getPackageName()是你当前类的包名，0代表是获取版本信息
+        PackageInfo packInfo = packageManager.getPackageInfo(context.getPackageName(),0);
+        String version = packInfo.versionName;
+        return version;
     }
 
 }

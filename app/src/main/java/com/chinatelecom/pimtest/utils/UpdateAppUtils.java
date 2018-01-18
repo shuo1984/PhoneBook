@@ -153,15 +153,15 @@ public class UpdateAppUtils {
                     case 1:  //sure
                         if (downloadBy == DOWNLOAD_BY_APP) {
                             if (isWifiConnected(activity)){
-//                                DownloadAppUtils.downloadForAutoInstall(activity, apkPath, "demo.apk", serverVersionName);
-                                DownloadAppUtils.download(activity, apkPath, serverVersionName);
+                                util.DownloadAppUtils.downloadForAutoInstall(activity, apkPath, "demo.apk", serverVersionName);
+//                                DownloadAppUtils.download(activity, apkPath, serverVersionName);
                             }else {
                                 new ConfirmDialog(activity, new Callback() {
                                     @Override
                                     public void callback(int position) {
                                         if (position==1){
-                                            DownloadAppUtils.download(activity, apkPath, serverVersionName);
-                                            //DownloadAppUtils.downloadForAutoInstall(activity, apkPath, "demo.apk", serverVersionName);
+                                            //DownloadAppUtils.download(activity, apkPath, serverVersionName);
+                                            util.DownloadAppUtils.downloadForAutoInstall(activity, apkPath, "demo.apk", serverVersionName);
                                         }else {
                                             if (isForce)activity.finish();
                                         }
