@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -20,6 +21,7 @@ import com.chinatelecom.pimtest.config.IConstant;
 import com.chinatelecom.pimtest.log.Log;
 import com.chinatelecom.pimtest.model.CallLogItem;
 import com.chinatelecom.pimtest.utils.DateUtils;
+import com.chinatelecom.pimtest.view.DialerPanel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -40,6 +42,8 @@ public class CallLogListFragment extends Fragment {
     private RelativeLayout noCallLogLayout;
     private CallLogListAdapter adapter;
     private Log logger = Log.build(CallLogListFragment.class);
+    private DialerPanel dialerPanel;
+    private ImageButton dialerToggleUp;
 
     public CallLogListFragment() {
         // Required empty public constructor
@@ -54,8 +58,29 @@ public class CallLogListFragment extends Fragment {
         asyncQueryHandler = new CallLogAsyncQueryHandler(getActivity().getContentResolver());
         callLogList = (ListView) mView.findViewById(R.id.call_log_list);
         noCallLogLayout = (RelativeLayout)mView.findViewById(R.id.no_callLog_layout);
+        dialerPanel = (DialerPanel)mView.findViewById(R.id.dialer_panel);
+        dialerToggleUp = (ImageButton)mView.findViewById(R.id.dialer_toggle_up);
+
         initData();
+        setupListeners();
         return mView;
+    }
+
+    private void setupListeners() {
+        dialerToggleUp.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialerPanel.setVisibility(View.VISIBLE);
+                dialerToggleUp.setVisibility(View.GONE);
+            }
+        });
+        dialerPanel.getToggleDown().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialerPanel.setVisibility(View.GONE);
+                dialerToggleUp.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     private void initData() {

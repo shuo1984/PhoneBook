@@ -67,4 +67,12 @@
         <item name="android:layout_marginBottom">6dp</item>
         <item name="android:paddingBottom">6dp</item>
     </style>
+
+    <style name="ImageView" />
+    <style name="ImageView.48">
+        <item name="android:layout_width">48dp</item>
+        <item name="android:layout_height">48dp</item>
+        <item name="android:scaleType">centerCrop</item>
+        <item name="android:padding">10dp</item>
+    </style>
 </resources>

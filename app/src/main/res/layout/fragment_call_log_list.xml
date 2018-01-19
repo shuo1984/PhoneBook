@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     tools:context="com.chinatelecom.pimtest.fragement.CallLogListFragment">
 
-    <!-- TODO: Update blank fragment layout -->
+
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
         android:id="@+id/call_log_wrapper"
@@ -27,7 +27,8 @@
         <RelativeLayout
             android:id="@+id/no_callLog_layout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:visibility="gone">
             <TextView
                 android:id="@+id/no_found_text"
                 android:layout_width="wrap_content"
@@ -37,6 +38,26 @@
                 android:textSize="20sp"
                 android:text="没有发现通话记录" />
         </RelativeLayout>
+
+         <com.chinatelecom.pimtest.view.DialerPanel
+             android:id="@+id/dialer_panel"
+             android:layout_width="match_parent"
+             android:layout_height="wrap_content"
+             android:layout_alignParentBottom="true">
+
+         </com.chinatelecom.pimtest.view.DialerPanel>
+
+        <ImageButton
+            android:id="@+id/dialer_toggle_up"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:visibility="gone"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="20dp"
+            android:layout_marginRight="20dp"
+            android:src="@mipmap/toggle_dialer_up_icon"
+            android:background="@color/blue_light_color"/>
     </RelativeLayout>
 
 </FrameLayout>

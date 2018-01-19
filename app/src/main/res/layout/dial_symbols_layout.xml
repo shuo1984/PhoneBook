@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@style/Layout.Horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="8dp"
+    android:background="@color/layout_bg">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <EditText
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:id="@+id/dial_output"
+            android:background="@color/white"
+            android:textSize="26sp"
+            />
+        <ImageView
+            android:id="@+id/dial_del_btn"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_dial_delete_large"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_alignParentRight="true"
+            android:layout_toRightOf="@+id/dial_output"
+            />
+    </RelativeLayout>
+
+    <LinearLayout
+        style="@style/Layout.Horizontal"
+        android:orientation="horizontal"
+        android:background="@color/line_background">
+
+        <ImageView
+            android:id="@+id/dial_number_1"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_1" />
+
+        <ImageView
+            android:id="@+id/dial_number_2"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_2" />
+
+        <ImageView
+            android:id="@+id/dial_number_3"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_3" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Layout.Horizontal"
+        android:orientation="horizontal"
+        android:background="@color/line_background">
+
+        <ImageView
+            android:id="@+id/dial_number_4"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_4" />
+
+        <ImageView
+            android:id="@+id/dial_number_5"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_5" />
+
+        <ImageView
+            android:id="@+id/dial_number_6"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_6" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Layout.Horizontal"
+        android:orientation="horizontal"
+        android:background="@color/line_background">
+
+        <ImageView
+            android:id="@+id/dial_number_7"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_7" />
+
+        <ImageView
+            android:id="@+id/dial_number_8"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_8" />
+
+        <ImageView
+            android:id="@+id/dial_number_9"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_9" />
+    </LinearLayout>
+
+    <LinearLayout
+        style="@style/Layout.Horizontal"
+        android:orientation="horizontal"
+        android:background="@color/line_background">
+
+        <ImageView
+            android:id="@+id/dial_number_star"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_s" />
+
+        <ImageView
+            android:id="@+id/dial_number_0"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginRight="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_0" />
+
+        <ImageView
+            android:id="@+id/dial_number_sharp"
+            style="@style/Layout.Wrap.Dial"
+            android:layout_centerVertical="true"
+            android:layout_weight="1"
+            android:layout_marginTop="1dp"
+            android:layout_marginBottom="1dp"
+            android:background="@drawable/bg_edittext_selector"
+            android:scaleType="centerInside"
+            android:clickable="true"
+            android:src="@mipmap/ic_dial_new_j" />
+    </LinearLayout>
+
+    <RelativeLayout
+        style="@style/Layout.Horizontal"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_gravity="center"
+        android:clickable="true"
+        >
+
+        <ImageView
+            android:id="@+id/call_setting"
+            style="@style/ImageView.48"
+            android:layout_marginLeft="20dp"
+            android:background="@mipmap/call_settings"
+            android:clickable="true"/>
+
+        <ImageView
+            android:id="@+id/dialer_button"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:background="@mipmap/dial_icon"
+            android:layout_centerInParent="true"
+            android:clickable="true"
+            />
+
+        <ImageView
+            android:id="@+id/toggle_dialer_down"
+            style="@style/ImageView.48"
+            android:background="@mipmap/toggle_dialer_down_icon"
+            android:layout_marginRight="20dp"
+            android:clickable="true"
+            android:layout_alignParentRight="true"/>
+    </RelativeLayout>
+</LinearLayout>

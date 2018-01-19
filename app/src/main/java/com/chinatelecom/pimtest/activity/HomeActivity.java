@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.WindowManager;
 
@@ -108,5 +109,26 @@ public class HomeActivity extends FragmentActivity implements ViewPager.OnPageCh
     }
 
 
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        /*if (keyCode == KeyEvent.KEYCODE_BACK && event.getRepeatCount() == 0) {
+            if (System.currentTimeMillis() - mExitTime > 3000) {
+                toastTool.showMessage(getString(R.string.message_exit_pim_again));
+                mExitTime = System.currentTimeMillis();
+            } else {
+                mExitTime = 0;
+                finish();
+            }
+            return true;
+        } else {
+            return super.onKeyDown(keyCode, event);
+        }*/
 
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            moveTaskToBack(false);
+            return true;
+        }
+        return super.onKeyDown(keyCode, event);
+
+    }
 }
