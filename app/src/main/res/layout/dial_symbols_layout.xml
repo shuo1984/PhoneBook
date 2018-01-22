@@ -14,6 +14,10 @@
             android:id="@+id/dial_output"
             android:background="@color/white"
             android:textSize="26sp"
+            android:padding="5dp"
+            android:textColor="@color/text_black_d_color"
+            android:inputType="phone"
+            android:gravity="center"
             />
         <ImageView
             android:id="@+id/dial_del_btn"
@@ -23,6 +27,7 @@
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
             android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/dial_output"
             />
     </RelativeLayout>

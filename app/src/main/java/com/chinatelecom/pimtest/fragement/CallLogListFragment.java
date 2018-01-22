@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
@@ -74,6 +75,7 @@ public class CallLogListFragment extends Fragment {
                 dialerToggleUp.setVisibility(View.GONE);
             }
         });
+
         dialerPanel.getToggleDown().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -177,5 +179,6 @@ public class CallLogListFragment extends Fragment {
         callLogList.setAdapter(adapter);
         noCallLogLayout.setVisibility(View.GONE);
     }
+
 
 }

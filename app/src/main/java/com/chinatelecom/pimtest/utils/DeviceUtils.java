@@ -7,6 +7,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.provider.Telephony;
+import android.telephony.TelephonyManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -131,6 +132,12 @@ public class DeviceUtils {
         PackageInfo packInfo = packageManager.getPackageInfo(context.getPackageName(),0);
         String version = packInfo.versionName;
         return version;
+    }
+
+    public static boolean isUIMABSENT(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE); //获得手机SIMType
+        int state = telephonyManager.getSimState();
+        return state == TelephonyManager.SIM_STATE_ABSENT;
     }
 
 }

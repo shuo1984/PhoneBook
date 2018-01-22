@@ -181,6 +181,7 @@ public class IConstant {
         public static final int REQ_CODE_SMS = 44;
         public static final int REQ_CODE_CALL_LOG = 55;
         public static final int REQ_CODE_EXTERNAL_STORAGE = 66;
+        public static final int REQ_CODE_CALL_PHONE = 77;
     }
 
     public interface API{
