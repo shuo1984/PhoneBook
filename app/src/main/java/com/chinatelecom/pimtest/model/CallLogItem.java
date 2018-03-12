@@ -20,6 +20,7 @@ public class CallLogItem implements Comparable<CallLogItem>{
     private long callDate;
     private String callDateStr;
     private List<CallLogItem> details;
+    private String dualSimCardStr;
 
 
     public String getName() {
@@ -74,6 +75,13 @@ public class CallLogItem implements Comparable<CallLogItem>{
         return details;
     }
 
+    public String getDualSimCardStr() {
+        return dualSimCardStr;
+    }
+
+    public void setDualSimCardStr(String dualSimCardStr) {
+        this.dualSimCardStr = dualSimCardStr;
+    }
 
     public void addSubCallLog(CallLogItem item){
         if(details==null){

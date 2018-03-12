@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
-            android:orientation="horizontal"
+            android:orientation="vertical"
             android:layout_margin="10dp"
             android:layout_alignParentRight="true">
             <TextView
@@ -46,8 +46,18 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/actionsheet_blue"
-                android:layout_gravity="center_vertical"
+                android:layout_gravity="top"
+                android:gravity="top"
                 android:text="未知时间"/>
+
+            <TextView
+                android:layout_width="30dp"
+                android:layout_height="20dp"
+                android:id="@+id/sim_card_index"
+                android:text="1"
+                android:gravity="center"
+                android:textColor="@color/actionsheet_blue"
+                android:background="@color/contact_indexer_bg"/>
 
         </LinearLayout>
 

@@ -18,6 +18,8 @@
             android:textColor="@color/text_black_d_color"
             android:inputType="phone"
             android:gravity="center"
+            android:cursorVisible="false"
+            android:textCursorDrawable="@null"
             />
         <ImageView
             android:id="@+id/dial_del_btn"
@@ -214,14 +216,42 @@
             android:background="@mipmap/call_settings"
             android:clickable="true"/>
 
-        <ImageView
-            android:id="@+id/dialer_button"
+        <RelativeLayout
+            android:id="@+id/single_sim_call_layout"
             android:layout_width="wrap_content"
-            android:layout_height="50dp"
-            android:background="@mipmap/dial_icon"
+            android:layout_height="wrap_content"
             android:layout_centerInParent="true"
-            android:clickable="true"
-            />
+           >
+            <ImageView
+                android:id="@+id/dialer_button"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@mipmap/dial_icon"
+                android:clickable="true" />
+        </RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/dual_sim_call_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="gone">
+
+            <Button
+                android:id="@+id/call_sim1"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:background="@color/blue"
+                android:text="卡1"
+                />
+            <Button
+                android:id="@+id/call_sim2"
+                android:layout_width="wrap_content"
+                android:layout_height="50dp"
+                android:layout_toRightOf="@+id/call_sim1"
+                android:background="@color/blue"
+                android:layout_marginLeft="10dp"
+                android:text="卡2"/>
+        </RelativeLayout>
 
         <ImageView
             android:id="@+id/toggle_dialer_down"

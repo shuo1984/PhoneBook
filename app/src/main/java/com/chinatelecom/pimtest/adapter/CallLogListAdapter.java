@@ -70,6 +70,7 @@ public class CallLogListAdapter extends BaseAdapter {
                 holder.location = (TextView) convertView.findViewById(R.id.location);
                 holder.number = (TextView) convertView.findViewById(R.id.number);
                 holder.callTime = (TextView) convertView.findViewById(R.id.callTime);
+                holder.dualSimCard = (TextView)convertView.findViewById(R.id.sim_card_index);
                 convertView.setTag(holder);
             } else {
                 holder = (ViewHolder) convertView.getTag();
@@ -116,6 +117,7 @@ public class CallLogListAdapter extends BaseAdapter {
             }
 
             holder.callTime.setText(callLogItem.getCallDateStr());
+            holder.dualSimCard.setText(callLogItem.getDualSimCardStr());
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -130,5 +132,6 @@ public class CallLogListAdapter extends BaseAdapter {
             TextView number;
             TextView location;
             TextView callTime;
+            TextView dualSimCard;
     }
 }

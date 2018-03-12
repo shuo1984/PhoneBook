@@ -11,25 +11,22 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 
 import com.chinatelecom.pimtest.R;
 import com.chinatelecom.pimtest.adapter.CallLogListAdapter;
-import com.chinatelecom.pimtest.config.IConstant;
 import com.chinatelecom.pimtest.log.Log;
 import com.chinatelecom.pimtest.model.CallLogItem;
 import com.chinatelecom.pimtest.utils.DateUtils;
 import com.chinatelecom.pimtest.view.DialerPanel;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+
+import cn.richinfo.dualsim.TelephonyManagement;
 
 
 /**
@@ -40,11 +37,14 @@ public class CallLogListFragment extends Fragment {
     private View mView;
     private AsyncQueryHandler asyncQueryHandler; // 异步查询数据库类对象
     private ListView callLogList;
-    private RelativeLayout noCallLogLayout;
+    private RelativeLayout noCallLogLayout,singleSimLayout,dualSimLayout;
     private CallLogListAdapter adapter;
     private Log logger = Log.build(CallLogListFragment.class);
     private DialerPanel dialerPanel;
     private ImageButton dialerToggleUp;
+    private TelephonyManagement.TelephonyInfo telephonyInfo;
+    private boolean isDualSim = false;
+    private Button sim1Call, sim2Call;
 
     public CallLogListFragment() {
         // Required empty public constructor
@@ -61,11 +61,17 @@ public class CallLogListFragment extends Fragment {
         noCallLogLayout = (RelativeLayout)mView.findViewById(R.id.no_callLog_layout);
         dialerPanel = (DialerPanel)mView.findViewById(R.id.dialer_panel);
         dialerToggleUp = (ImageButton)mView.findViewById(R.id.dialer_toggle_up);
+        singleSimLayout = (RelativeLayout)mView.findViewById(R.id.single_sim_call_layout);
+        dualSimLayout = (RelativeLayout)mView.findViewById(R.id.dual_sim_call_layout);
+
+        telephonyInfo = TelephonyManagement.getInstance().updateTelephonyInfo(getActivity()).getTelephonyInfo(getActivity());
 
         initData();
+        setupDualSimInfo();
         setupListeners();
         return mView;
     }
+
 
     private void setupListeners() {
         dialerToggleUp.setOnClickListener(new View.OnClickListener() {
@@ -92,7 +98,8 @@ public class CallLogListFragment extends Fragment {
                 CallLog.Calls.NUMBER,    //号码
                 CallLog.Calls.TYPE,  //呼入/呼出(2)/未接
                 CallLog.Calls.DATE,  //拨打时间
-                CallLog.Calls.DURATION   //通话时长
+                CallLog.Calls.DURATION,   //通话时长
+                CallLog.Calls.PHONE_ACCOUNT_ID
         };
 
         asyncQueryHandler.startQuery(0,null,uri,projection,null,
@@ -137,6 +144,11 @@ public class CallLogListFragment extends Fragment {
                         int min = callDuration / 60;
                         int sec = callDuration % 60;
 
+                        //通话卡
+                        int subId = cursor.getInt(cursor.getColumnIndex(CallLog.Calls.PHONE_ACCOUNT_ID));
+
+
+
                         CallLogItem callLogItem = new CallLogItem();
                         callLogItem.setName(callName);
                         callLogItem.setNumber(callNumber);
@@ -144,6 +156,11 @@ public class CallLogListFragment extends Fragment {
                         callLogItem.setCallDateStr(callDateStr);
                         callLogItem.setCallDuration(callDuration);
                         callLogItem.setCallType(callType);
+                        if(telephonyInfo.getSubIdSIM1() == subId) {
+                            callLogItem.setDualSimCardStr("1");
+                        }else{
+                            callLogItem.setDualSimCardStr("2");
+                        }
                         //callLogs.add(callLogItem);
                         boolean isSubItem = false;
                         for (CallLogItem item : callLogGroups) {
@@ -156,7 +173,6 @@ public class CallLogListFragment extends Fragment {
                         if (!isSubItem) {
                             callLogGroups.add(callLogItem);
                         }
-
                     }
 
                 } else {
@@ -180,5 +196,10 @@ public class CallLogListFragment extends Fragment {
         noCallLogLayout.setVisibility(View.GONE);
     }
 
+    private void setupDualSimInfo() {
+        isDualSim = telephonyInfo.isDualSIM();
+        singleSimLayout.setVisibility(isDualSim ? View.GONE : View.VISIBLE);
+        dualSimLayout.setVisibility(isDualSim ? View.VISIBLE : View.GONE);
+    }
 
 }
