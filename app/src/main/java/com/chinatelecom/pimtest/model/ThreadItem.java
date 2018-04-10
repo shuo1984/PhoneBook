@@ -1,47 +1,16 @@
 package com.chinatelecom.pimtest.model;
 
 /**
- * Created by Shuo on 2016/10/7.
- * 短信模型类
+ * Created by Shuo on 2018/4/4.
  */
 
-public class SmsItem {
-
-    private String threadId;
-    private String messageId;
-    private long date;
-    private String messageCount;
-    private String recipient_ids;
-    private String snippet;
-    private String snippet_cs;
-    private String read;
-    private String error;
-    private String has_attachment;
-    private String address;
-    private int type;
-    private int smsStatus;
-
-    private String body;
-    private int subId;
-
-    public final static int SMS_MESSAGE_TYPE_INBOX = 1;
-    public final static int SMS_MESSAGE_TYPE_SENT = 2;
-    public final static int SMS_MESSAGE_TYPE_DRAFT = 3;
-
-    public String getThreadId() {
+public class ThreadItem {
+    public long getThreadId() {
         return threadId;
     }
 
-    public void setThreadId(String threadId) {
+    public void setThreadId(long threadId) {
         this.threadId = threadId;
-    }
-
-    public String getMessageId() {
-        return messageId;
-    }
-
-    public void setMessageId(String messageId) {
-        this.messageId = messageId;
     }
 
     public long getDate() {
@@ -116,14 +85,6 @@ public class SmsItem {
         this.address = address;
     }
 
-    public String getBody() {
-        return body;
-    }
-
-    public void setBody(String body) {
-        this.body = body;
-    }
-
     public int getType() {
         return type;
     }
@@ -132,30 +93,15 @@ public class SmsItem {
         this.type = type;
     }
 
-    public int getSmsStatus() {
-        return smsStatus;
-    }
-
-    public void setSmsStatus(int smsStatus) {
-        this.smsStatus = smsStatus;
-    }
-
-    public int getSubId() {
-        return subId;
-    }
-
-    public void setSubId(int subId) {
-        this.subId = subId;
-    }
-
-    public SmsItem(){
-
-    }
-
-    public SmsItem(String threadId, String msgCount, String msgSnippet) {
-        this.threadId = threadId;
-        this.messageCount = msgCount;
-        this.snippet = msgSnippet;
-    }
-
+    private long threadId;
+    private long date;
+    private String messageCount;
+    private String recipient_ids;
+    private String snippet;
+    private String snippet_cs;
+    private String read;
+    private String error;
+    private String has_attachment;
+    private String address;
+    private int type;
 }

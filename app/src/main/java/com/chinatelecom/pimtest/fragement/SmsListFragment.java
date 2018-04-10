@@ -1,6 +1,7 @@
 package com.chinatelecom.pimtest.fragement;
 
 import android.content.AsyncQueryHandler;
+import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -18,9 +19,11 @@ import com.chinatelecom.pimtest.adapter.MessageListAdapter;
 import com.chinatelecom.pimtest.interfaces.NotificationListener;
 import com.chinatelecom.pimtest.log.Log;
 import com.chinatelecom.pimtest.manager.MessageCacheManager;
+import com.chinatelecom.pimtest.manager.MessageManager;
 import com.chinatelecom.pimtest.manager.SmsNotificationManager;
 import com.chinatelecom.pimtest.model.Notification;
 import com.chinatelecom.pimtest.model.SmsItem;
+import com.chinatelecom.pimtest.model.ThreadItem;
 import com.chinatelecom.pimtest.utils.BaseIntentUtil;
 import com.chinatelecom.pimtest.utils.DeviceUtils;
 import com.chinatelecom.pimtest.utils.RexseeSMS;
@@ -36,10 +39,11 @@ public class SmsListFragment extends Fragment {
     private View mView;
     private AsyncQueryHandler asyncQueryHandler; // 异步查询数据库类对象
     private ListView smsList;
-    private List<SmsItem> dataList;
+    private List<ThreadItem> dataList;
     private MessageListAdapter adapter;
     private RexseeSMS rsms;
     private SmsChangeListener smsChangeListener;
+    private MessageManager messageManager;
     private Log logger = Log.build(SmsListFragment.class);
 
 
@@ -59,6 +63,7 @@ public class SmsListFragment extends Fragment {
         dataList = new ArrayList<>();
         rsms = new RexseeSMS(getActivity());
         smsChangeListener = new SmsChangeListener();
+        messageManager = new MessageManager();
         init();
 
         return mView;
@@ -76,6 +81,17 @@ public class SmsListFragment extends Fragment {
 
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        unregisterSmsListener();
+    }
+
     /**
      * 初始化数据库查询参数
      */
@@ -83,8 +99,14 @@ public class SmsListFragment extends Fragment {
         new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                dataList = rsms.getThreadsNum(rsms.getThreads(0));
-                MessageCacheManager.updateCache(dataList);
+              /*  dataList = rsms.getThreadsNum(rsms.getThreads(0));
+                MessageCacheManager.updateCache(dataList);*/
+                Cursor cursor = messageManager.findAllThreadCursor();
+                dataList = messageManager.findAllThreads(cursor);
+                logger.debug("#### find Cursor count:" + cursor.getCount());
+              /*  if(!cursor.isClosed()) {
+                    cursor.close();
+                }*/
                 return null;
             }
 
@@ -100,16 +122,16 @@ public class SmsListFragment extends Fragment {
 
     }
 
-    private void setAdapter(List<SmsItem> list) {
+    private void setAdapter(List<ThreadItem> list) {
         adapter = new MessageListAdapter(getActivity(), list);
         smsList.setAdapter(adapter);
         smsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, String> map = new HashMap<String, String>();
-                SmsItem sb = (SmsItem) adapter.getItem(position);
-                map.put("phoneNumber", sb.getAddress());
-                map.put("threadId", sb.getThreadId());
+                ThreadItem item = (ThreadItem) adapter.getItem(position);
+                map.put("phoneNumber", item.getAddress());
+                map.put("threadId", String.valueOf(item.getThreadId()));
                 BaseIntentUtil.intentSysDefault(getActivity(),MessageBoxListActivity.class, map);
             }
         });

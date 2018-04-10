@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.ContentObserver;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
@@ -16,6 +17,7 @@ import android.support.annotation.Nullable;
 
 import com.chinatelecom.pimtest.config.IConstant;
 import com.chinatelecom.pimtest.log.Log;
+import com.chinatelecom.pimtest.manager.MessageCacheManager;
 import com.chinatelecom.pimtest.manager.SmsNotificationManager;
 import com.chinatelecom.pimtest.model.Notification;
 import com.chinatelecom.pimtest.receiver.ShortMessageReceiver;
@@ -55,9 +57,27 @@ public class PhoneBookService extends Service {
     public void onCreate() {
         logger.debug("PhoneBookService OnCreate start====");
         super.onCreate();
+        updateCache();
         registerContentObserver();
         receiveMessage();
         logger.debug("PhoneNookService OnCreate finish===");
+
+    }
+
+    private void updateCache() {
+        new AsyncTask() {
+            @Override
+            protected Object doInBackground(Object[] objects) {
+                MessageCacheManager.updateRecipientsCache();
+                return null;
+            }
+
+            @Override
+            protected void onPostExecute(Object o) {
+                super.onPostExecute(o);
+                logger.debug("#### 缓存更新完成********");
+            }
+        }.execute();
 
     }
 

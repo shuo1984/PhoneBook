@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.chinatelecom.pimtest.R;
 import com.chinatelecom.pimtest.model.SmsItem;
+import com.chinatelecom.pimtest.model.ThreadItem;
 import com.chinatelecom.pimtest.utils.DateUtils;
 import com.chinatelecom.pimtest.utils.StringUtils;
 
@@ -21,10 +22,10 @@ import java.util.List;
 public class MessageListAdapter extends BaseAdapter {
 
     private LayoutInflater inflater;
-    private List<SmsItem> list;
+    private List<ThreadItem> list;
     private Context ctx; // 上下文
 
-    public MessageListAdapter(Context context, List<SmsItem> messageList){
+    public MessageListAdapter(Context context, List<ThreadItem> messageList){
         this.ctx = context;
         this.inflater = LayoutInflater.from(context);
         this.list = messageList;
@@ -60,20 +61,22 @@ public class MessageListAdapter extends BaseAdapter {
             holder = (ViewHolder) convertView.getTag();
         }
 
-        SmsItem sms = list.get(position);
-        String phoneNum = sms.getAddress();
+        ThreadItem threadItem = list.get(position);
+        String phoneNum = threadItem.getAddress();
         String contactName = null;
   /*      if(ContactCacheManager.getNumberContactMap().containsKey(phoneNum)){
             contactName = ContactCacheManager.getNumberContactMap().get(phoneNum).getDesplayName();
         }*/
-        String date = DateUtils.format(sms.getDate());
-        String snippet = sms.getSnippet();
-        String count = sms.getMessageCount();
+        String date = DateUtils.format(threadItem.getDate());
+        String snippet = threadItem.getSnippet();
+        String count = threadItem.getMessageCount();
 
         holder.phoneNum.setText(StringUtils.isNotEmpty(contactName)?contactName:phoneNum);
         holder.snippet.setText(snippet);
         holder.date.setText(date);
-        holder.messageCount.setText("("+String.valueOf(count)+")");
+        if(StringUtils.isNotEmpty(count)) {
+            holder.messageCount.setText("(" + String.valueOf(count) + ")");
+        }
         return convertView;
     }
 

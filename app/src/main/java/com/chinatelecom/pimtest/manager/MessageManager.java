@@ -8,16 +8,22 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.Telephony;
+import android.service.chooser.ChooserTargetService;
 import android.telephony.SmsManager;
 
 import com.chinatelecom.pimtest.config.IConstant;
+import com.chinatelecom.pimtest.interfaces.Closure;
 import com.chinatelecom.pimtest.interfaces.Transformer;
 import com.chinatelecom.pimtest.model.SmsItem;
+import com.chinatelecom.pimtest.model.ThreadItem;
 import com.chinatelecom.pimtest.utils.CursorTemplate;
 import com.chinatelecom.pimtest.utils.CursorUtils;
 import com.chinatelecom.pimtest.utils.PhoneUtils;
+import com.chinatelecom.pimtest.utils.StringUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Shuo on 2018/1/15.
@@ -150,6 +156,64 @@ public class MessageManager extends BaseManager{
             logger.error("%s", e.getMessage());
         }
         return Long.parseLong(info.getMessageId());
+    }
+
+
+    public Cursor findAllThreadCursor(){
+        String[] ALL_THREADS_PROJECTION = {
+                Telephony.Threads._ID,
+                Telephony.Threads.DATE,
+                Telephony.Threads.MESSAGE_COUNT,
+                Telephony.Threads.RECIPIENT_IDS,
+                Telephony.Threads.SNIPPET,
+                Telephony.Threads.READ
+
+        };
+
+        Cursor cursor = contentResolver.query(IConstant.Message.THREADS_URI,
+                ALL_THREADS_PROJECTION,
+                null,null,
+                "date DESC"
+        );
+
+        return cursor;
+    }
+
+    public List<ThreadItem> findAllThreads(Cursor cursor){
+        List<ThreadItem> threads = new ArrayList<>();
+        if(cursor!=null&&cursor.moveToFirst()){
+            /*while (!cursor.isAfterLast())*/
+            for(int i=0; i<cursor.getCount();i++)
+            {
+                ThreadItem item = new ThreadItem();
+                item.setThreadId(CursorUtils.getLong(cursor,Telephony.Threads._ID));
+                item.setSnippet(CursorUtils.getString(cursor,Telephony.Threads.SNIPPET));
+                item.setRecipient_ids(CursorUtils.getString(cursor,Telephony.Threads.RECIPIENT_IDS));
+                item.setDate(CursorUtils.getLong(cursor,Telephony.Threads.DATE));
+                item.setMessageCount(CursorUtils.getString(cursor,Telephony.Threads.MESSAGE_COUNT));
+                String address = MessageCacheManager.getRecipientAddressByThreadId(item.getThreadId());
+                item.setAddress(StringUtils.isNotEmpty(address)? address : "");
+                threads.add(item);
+                cursor.moveToNext();
+            }
+        }
+
+        return threads;
+    }
+
+
+    public Cursor findAllRecipients(){
+        String[] SMS_ADDRESS_PROJECTION = {
+                "_id",
+                "thread_id",
+                "address"
+        };
+
+        Cursor cursor = contentResolver.query(IConstant.Message.MESSAGE_URI,
+                                                 SMS_ADDRESS_PROJECTION,
+                                            null,null,null);
+
+        return cursor;
     }
 
 
