@@ -135,7 +135,6 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
 
                 <category android:name="android.intent.category.DEFAULT" />
-
                 <action android:name="android.provider.Telephony.SMS_RECEIVED2" />
                 <action android:name="android.provider.Telephony.SMS_DELIVER_ACTION" />
                 <action android:name="android.provider.Telephony.SMS_DELIVER" />

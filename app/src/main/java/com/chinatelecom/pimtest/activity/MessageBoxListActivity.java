@@ -1,18 +1,12 @@
 package com.chinatelecom.pimtest.activity;
 
 import android.Manifest;
-import android.app.Activity;
-import android.bluetooth.BluetoothClass;
 import android.content.AsyncQueryHandler;
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
-import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -21,7 +15,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chinatelecom.pimtest.R;
@@ -33,25 +26,22 @@ import com.chinatelecom.pimtest.log.Log;
 import com.chinatelecom.pimtest.manager.MessageManager;
 import com.chinatelecom.pimtest.manager.NotificationManager;
 import com.chinatelecom.pimtest.manager.SmsNotificationManager;
-import com.chinatelecom.pimtest.model.Message;
 import com.chinatelecom.pimtest.model.Notification;
 import com.chinatelecom.pimtest.model.SmsItem;
-import com.chinatelecom.pimtest.utils.DateUtils;
+import com.chinatelecom.pimtest.utils.CursorUtils;
 import com.chinatelecom.pimtest.utils.DeviceUtils;
 import com.chinatelecom.pimtest.utils.StringUtils;
-import com.google.i18n.phonenumbers.Phonenumber;
 import com.zhy.m.permission.MPermissions;
 import com.zhy.m.permission.PermissionDenied;
 import com.zhy.m.permission.PermissionGrant;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class MessageBoxListActivity extends AppCompatActivity {
 
     private ListView talkList;
-    private List<Message> messages;
+    private List<SmsItem> messages;
     private AsyncQueryHandler asyncQuery;
     private Button sendMsg;
     private EditText msg;
@@ -60,9 +50,11 @@ public class MessageBoxListActivity extends AppCompatActivity {
     String threadID;
     String phoneNums;
     private NotificationManager notificationManager = SmsNotificationManager.getInstance();
+    private MessageManager messageManager = new MessageManager();
     private MessageSentListener messageSentListener;
     private MessageChangeListener messageChangeListener;
     private Log logger = Log.build(MessageBoxListActivity.class);
+    private boolean showKeyBoard = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,7 +67,6 @@ public class MessageBoxListActivity extends AppCompatActivity {
         messageChangeListener = new MessageChangeListener();
         setupViews();
         setupListeners();
-
         init(threadID);
 
     }
@@ -137,6 +128,7 @@ public class MessageBoxListActivity extends AppCompatActivity {
             msg = (EditText)findViewById(R.id.send_text);
             msg.requestFocus();
             keyboard = (ImageView)findViewById(R.id.keyboard);
+
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -148,7 +140,7 @@ public class MessageBoxListActivity extends AppCompatActivity {
     private void init(final String threadID) {
         asyncQuery = new MessageAsynQueryHandler(getContentResolver());
         talkList = (ListView) findViewById(R.id.message_list);
-        messages = new ArrayList<Message>();
+        messages = new ArrayList<SmsItem>();
 
        /* String[] projection = new String[] { "date", "address", "person",
                 "body", "type" };*/
@@ -156,47 +148,26 @@ public class MessageBoxListActivity extends AppCompatActivity {
         new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
-                String[] projection = new String[]{  IConstant.Message.Sms.DATE,
-                        IConstant.Message.Sms.ADDRESS, IConstant.Message.Sms.BODY,
-                        IConstant.Message.Sms.READ, IConstant.Message.Sms.TYPE
+                String[] projection = new String[]{
+                        IConstant.Message.Sms._ID,
+                        IConstant.Message.Sms.DATE,
+                        IConstant.Message.Sms.ADDRESS,
+                        IConstant.Message.Sms.BODY,
+                        IConstant.Message.Sms.READ,
+                        IConstant.Message.Sms.TYPE,
+                        IConstant.Message.Sms.STATUS
                 };
 
                 asyncQuery.startQuery(0, null, IConstant.Message.MESSAGE_URI, projection,
-                        "thread_id = " + threadID  + " and type!=3" , null, "date asc");
+                        "thread_id = " + threadID + " and type!=3", null, "date asc");
                 return null;
             }
         }.execute();
 
-       /* try {
-            List<Message> threadMessages = new ArrayList<>();
-            for (SmsItem sms: MessageCacheManager.getDefaultCacheList()) {
-                if(sms.getThreadId().equals(threadID)){
-                    Message m = new Message();
-                    m.setName(sms.getAddress());
-                    m.setDate(DateUtils.format(sms.getDate()));
-                    m.setText(sms.getBody());
-                    if(sms.getType()==1){
-                        m.setLayoutID(R.layout.list_say_he_item);
-                    }else{
-                        m.setLayoutID(R.layout.list_say_me_item);
-                    }
-                    threadMessages.add(m);
-                }
-            }
-            if (threadMessages.size() > 0) {
-                talkList.setAdapter(new MessageBoxListAdapter(
-                        MessageBoxListActivity.this, threadMessages));
-                talkList.setSelection(messages.size());
-            } else {
-                Toast.makeText(MessageBoxListActivity.this, "没有会话消息",
-                        Toast.LENGTH_SHORT).show();
-            }
-        }catch(Exception e){
-            e.printStackTrace();
-            Log.d("####MessageBoxList", e.getMessage());
-        }*/
-
+        messageManager.readMessage(Long.parseLong(threadID));
     }
+
+
 
     private class MessageAsynQueryHandler extends AsyncQueryHandler {
 
@@ -210,7 +181,19 @@ public class MessageBoxListActivity extends AppCompatActivity {
                 cursor.moveToFirst();
                 for (int i = 0; i < cursor.getCount(); i++) {
                     cursor.moveToPosition(i);
-                    long millisec = cursor.getLong(cursor.getColumnIndex("date"));
+                    SmsItem smsItem = new SmsItem();
+                    smsItem.setMessageId(String.valueOf(CursorUtils.getLong(cursor,IConstant.Message.Sms._ID)));
+                    smsItem.setDate(CursorUtils.getLong(cursor,IConstant.Message.Sms.DATE));
+                    smsItem.setType(CursorUtils.getInt(cursor,IConstant.Message.Sms.TYPE));
+                    smsItem.setAddress(CursorUtils.getString(cursor, IConstant.Message.Sms.ADDRESS));
+                    smsItem.setSmsStatus(CursorUtils.getInt(cursor,IConstant.Message.Sms.STATUS));
+                    smsItem.setBody(CursorUtils.getString(cursor,IConstant.Message.Sms.BODY));
+                    if(smsItem.getType()==1){
+                        smsItem.setConversationLayoutID(R.layout.list_say_he_item);
+                    }else{
+                        smsItem.setConversationLayoutID(R.layout.list_say_me_item);
+                    }
+                    /*long millisec = cursor.getLong(cursor.getColumnIndex("date"));
                     String date = DateUtils.format(millisec);
                     if (cursor.getInt(cursor.getColumnIndex("type")) == 1) {
                         Message d = new Message(
@@ -228,7 +211,8 @@ public class MessageBoxListActivity extends AppCompatActivity {
                                 cursor.getString(cursor.getColumnIndex("body")),
                                 R.layout.list_say_me_item);
                         messages.add(d);
-                    }
+                    }*/
+                    messages.add(smsItem);
                 }
                 if (messages.size() > 0) {
                     talkList.setAdapter(new MessageBoxListAdapter(
@@ -244,7 +228,12 @@ public class MessageBoxListActivity extends AppCompatActivity {
     }
 
     private void switchKeyBoard(){
-        DeviceUtils.showKeyBoard(MessageBoxListActivity.this,msg);
+        if(showKeyBoard) {
+            DeviceUtils.hideKeyBoard(MessageBoxListActivity.this, msg);
+        }else{
+            DeviceUtils.showKeyBoard(MessageBoxListActivity.this, msg);
+        }
+        showKeyBoard = !showKeyBoard;
     }
 
 

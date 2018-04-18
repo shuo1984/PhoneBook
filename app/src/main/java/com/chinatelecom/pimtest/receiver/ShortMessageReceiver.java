@@ -37,8 +37,7 @@ public class ShortMessageReceiver extends BroadcastReceiver {
         logger.debug("IsDefaultSmsApp:" + DeviceUtils.isDefaultMessageApp(context));
         Cursor cursor = null;
         try {
-            if (SMS_RECEIVED.equals(intent.getAction())|| SMS_DELIVER.equals(intent.getAction())) {
-
+            if (SMS_RECEIVED.equals(intent.getAction())) {
                 if(Build.VERSION.SDK_INT>=19) {
                     if (DeviceUtils.isDefaultMessageApp(context)) {
                         logger.debug("Message received.......");
@@ -97,7 +96,9 @@ public class ShortMessageReceiver extends BroadcastReceiver {
                 Toast.makeText(context, smsToast, Toast.LENGTH_LONG).show();
                 logger.debug("message from: " + msgAddress + ", message body: " + msgBody
                         + ", message date: " + msgDate);
+                popupMsgWindow();
                 long id = addSmsToDB(msgAddress, msgBody, msgDate);
+                abortBroadcast();
             }
         }
 
@@ -106,6 +107,10 @@ public class ShortMessageReceiver extends BroadcastReceiver {
         if (null == cursor){
             return;
         }*/
+    }
+
+    private void popupMsgWindow() {
+
     }
 
     private long addSmsToDB(String number, String content, Long time) {

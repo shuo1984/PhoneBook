@@ -14,7 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.chinatelecom.pimtest.R;
-import com.chinatelecom.pimtest.model.Message;
+import com.chinatelecom.pimtest.manager.MessageManager;
+import com.chinatelecom.pimtest.model.SmsItem;
+import com.chinatelecom.pimtest.utils.DateUtils;
 
 import java.util.List;
 
@@ -24,17 +26,19 @@ import java.util.List;
 
 public class MessageBoxListAdapter extends BaseAdapter{
     private Context ctx;
-    private List<Message> mbList;
+    private List<SmsItem> mbList;
     private LinearLayout layout_father;
     private LayoutInflater vi;
     private LinearLayout layout_child;
     private TextView tvDate;
     private TextView tvText;
+    private MessageManager messageManager;
 
-    public MessageBoxListAdapter(Context context, List<Message> coll) {
+    public MessageBoxListAdapter(Context context, List<SmsItem> coll) {
         ctx = context;
         vi = (LayoutInflater) ctx
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        messageManager = new MessageManager();
         this.mbList = coll;
     }
 
@@ -55,8 +59,8 @@ public class MessageBoxListAdapter extends BaseAdapter{
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        Message mb = mbList.get(position);
-        int itemLayout = mb.getLayoutID();
+        SmsItem mb = mbList.get(position);
+        int itemLayout = mb.getConversationLayoutID();
         layout_father = new LinearLayout(ctx);
         vi.inflate(itemLayout, layout_father, true);
 
@@ -66,11 +70,11 @@ public class MessageBoxListAdapter extends BaseAdapter{
 
         tvText = (TextView) layout_father
                 .findViewById(R.id.messagedetail_row_text);
-        tvText.setText(mb.getText());
+        tvText.setText(mb.getBody());
 
         tvDate = (TextView) layout_father
                 .findViewById(R.id.messagedetail_row_date);
-        tvDate.setText(mb.getDate());
+        tvDate.setText(DateUtils.format(mb.getDate()));
 
         addListener(tvText, tvDate, layout_child, mb);
 
@@ -79,7 +83,7 @@ public class MessageBoxListAdapter extends BaseAdapter{
     }
 
     public void addListener(final TextView tvText, final TextView tvDate,
-                            LinearLayout layout_bj, final Message mb) {
+                            LinearLayout layout_bj, final SmsItem mb) {
 
         layout_bj.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
@@ -116,22 +120,26 @@ public class MessageBoxListAdapter extends BaseAdapter{
 
     private String[] newtan = new String[] { "转发", "复制文本内容", "删除", "查询信息详情" };
 
-    private void showListDialog(final String[] arg, final Message mb) {
+    private void showListDialog(final String[] arg, final SmsItem mb) {
         new AlertDialog.Builder(ctx).setTitle("信息选项")
                 .setItems(arg, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         switch (which) {
 
                             case 0:
-                                break;
 
+                                break;
                             case 1:
                                 ClipboardManager cmb = (ClipboardManager) ctx
                                         .getSystemService(ctx.CLIPBOARD_SERVICE);
-                                cmb.setText(mb.getText());
+                                cmb.setText(mb.getBody());
                                 break;
                             case 2:
-
+                                try {
+                                    messageManager.deleteMessage(Long.parseLong(mb.getMessageId()));
+                                }catch(Exception e){
+                                    e.printStackTrace();
+                                }
                                 break;
                             case 3:
                                 break;

@@ -216,5 +216,40 @@ public class MessageManager extends BaseManager{
         return cursor;
     }
 
+    public int getNewSmsCountByThreadId(long threadId) {
+        int result = 0;
+        Cursor csr = contentResolver.query(Uri.parse("content://sms"), null,
+                "type = 1 and read = 0 and thread_id=?", new String[]{String.valueOf(threadId)}, null);
+        if (csr != null) {
+            result = csr.getCount();
+            csr.close();
+        }
+        return result;
+    }
+
+
+    /**
+     * 根据messageid删除指定单条短信
+     * @param id
+     */
+    public void deleteMessage(long id) {
+        String strId = String.valueOf(id);
+        try {
+            //contentResolver.delete(ContentUris.withAppendedId(Uri.parse("content://sms/"), id), null, null);
+            int count = contentResolver.delete(IConstant.Message.MESSAGE_URI, "_id=" + id, null);
+            logger.debug("delete sms count:" + count);
+        } catch (Exception ex) {
+            logger.debug("####Delete message id:%d failed!", id);
+        }
+        //  }
+    }
+
+
+    public void readMessage(long threadId) {
+        logger.debug("read message thread id:%d", threadId);
+        ContentValues values = new ContentValues();
+        values.put("read", 1);
+        contentResolver.update(IConstant.Message.MESSAGE_URI, values, "read != 1 and thread_id=" + threadId, null);
+    }
 
 }

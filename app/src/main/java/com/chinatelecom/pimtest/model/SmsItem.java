@@ -23,6 +23,7 @@ public class SmsItem {
 
     private String body;
     private int subId;
+    private int conversationLayoutID;
 
     public final static int SMS_MESSAGE_TYPE_INBOX = 1;
     public final static int SMS_MESSAGE_TYPE_SENT = 2;
@@ -147,6 +148,16 @@ public class SmsItem {
     public void setSubId(int subId) {
         this.subId = subId;
     }
+
+
+    public int getConversationLayoutID() {
+        return conversationLayoutID;
+    }
+
+    public void setConversationLayoutID(int conversationLayoutID) {
+        this.conversationLayoutID = conversationLayoutID;
+    }
+
 
     public SmsItem(){
 

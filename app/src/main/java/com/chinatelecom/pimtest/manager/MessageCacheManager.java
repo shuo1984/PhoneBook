@@ -50,7 +50,6 @@ public class MessageCacheManager implements CacheManager<SmsItem> {
                 return true;
             }
         });
-
     }
 
     public static String getRecipientAddressByThreadId(long threadId){

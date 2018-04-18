@@ -14,6 +14,7 @@ import android.os.Looper;
 import android.provider.CallLog;
 import android.provider.ContactsContract;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 
 import com.chinatelecom.pimtest.config.IConstant;
 import com.chinatelecom.pimtest.log.Log;
@@ -34,7 +35,7 @@ public class PhoneBookService extends Service {
 
     private Handler handler = new Handler(Looper.getMainLooper());
     private Log logger = Log.build(PhoneBookService.class);
-
+    private ShortMessageReceiver shortMessageReceiver;
     @TargetApi(Build.VERSION_CODES.ECLAIR)
     public enum ContentType {
         RAWCONTACT(ContactsContract.RawContacts.CONTENT_URI),
@@ -109,9 +110,11 @@ public class PhoneBookService extends Service {
                                break;
                            case MESSAGE:
                                event = Notification.Event.MESSAGE_CHANGED;
-                               SmsNotificationManager.getInstance().notifyChange(event, null);
                                break;
                        }
+                        if(null!=event) {
+                            SmsNotificationManager.getInstance().notifyChange(event, null);
+                        }
 
                    }
 
@@ -120,13 +123,13 @@ public class PhoneBookService extends Service {
     }
 
     public void receiveMessage() {
-        ShortMessageReceiver shortMessageReceiver = new ShortMessageReceiver();
+        shortMessageReceiver = new ShortMessageReceiver();
         IntentFilter intentFilter = new IntentFilter();
         intentFilter.addAction("android.provider.Telephony.SMS_RECEIVED");
         intentFilter.addAction("android.provider.Telephony.SMS_RECEIVED2");
         intentFilter.addAction("android.provider.Telephony.SMS_DELIVER_ACTION");
         intentFilter.addAction("android.provider.Telephony.SMS_DELIVER");
-        registerReceiver(shortMessageReceiver, intentFilter);
+        LocalBroadcastManager.getInstance(getApplicationContext()).registerReceiver(shortMessageReceiver, intentFilter);
     }
 
     @Nullable
@@ -138,6 +141,9 @@ public class PhoneBookService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        if(shortMessageReceiver!=null) {
+            LocalBroadcastManager.getInstance(getApplicationContext()).unregisterReceiver(shortMessageReceiver);
+        }
     }
 
 
