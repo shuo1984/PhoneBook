@@ -1,6 +1,9 @@
 package com.chinatelecom.pimtest.fragement;
 
+import android.app.AlertDialog;
 import android.content.AsyncQueryHandler;
+import android.content.ClipboardManager;
+import android.content.DialogInterface;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -40,12 +43,13 @@ public class SmsListFragment extends Fragment {
     private AsyncQueryHandler asyncQueryHandler; // 异步查询数据库类对象
     private ListView smsList;
     private List<ThreadItem> dataList;
+    private List<ThreadItem> notificationMsgList;
+    private List<ThreadItem> generalMsgList;
     private MessageListAdapter adapter;
     private RexseeSMS rsms;
     private SmsChangeListener smsChangeListener;
     private MessageManager messageManager;
     private Log logger = Log.build(SmsListFragment.class);
-
 
     public SmsListFragment() {
 
@@ -96,6 +100,7 @@ public class SmsListFragment extends Fragment {
      * 初始化数据库查询参数
      */
     private void init() {
+
         new AsyncTask() {
             @Override
             protected Object doInBackground(Object[] objects) {
@@ -103,7 +108,10 @@ public class SmsListFragment extends Fragment {
                 MessageCacheManager.updateCache(dataList);*/
                 Cursor cursor = messageManager.findAllThreadCursor();
                 dataList = messageManager.findAllThreads(cursor);
+                generalMsgList = new ArrayList<>();
+                notificationMsgList = new ArrayList<>();
                 logger.debug("#### find Cursor count:" + cursor.getCount());
+                classifyMsgs(dataList);
               /*  if(!cursor.isClosed()) {
                     cursor.close();
                 }*/
@@ -114,7 +122,21 @@ public class SmsListFragment extends Fragment {
             protected void onPostExecute(Object o) {
                 super.onPostExecute(o);
                 if(dataList!=null && dataList.size()>0){
-                    setAdapter(dataList);
+                    setAdapter(generalMsgList);
+                }
+            }
+
+            private void classifyMsgs(List<ThreadItem> messageList) {
+                for(ThreadItem item : messageList){
+                    if(item.getAddress().startsWith("106") ||
+                            item.getAddress().startsWith("95") ||
+                            item.getAddress().startsWith("96") ||
+                            item.getAddress().startsWith("10001") ||
+                            (item.getAddress().startsWith("1") && item.getAddress().length()==5)){
+                        notificationMsgList.add(item);
+                    }else{
+                        generalMsgList.add(item);
+                    }
                 }
             }
         }.execute();
@@ -122,7 +144,7 @@ public class SmsListFragment extends Fragment {
 
     }
 
-    private void setAdapter(List<ThreadItem> list) {
+    private void setAdapter(final List<ThreadItem> list) {
         adapter = new MessageListAdapter(getActivity(), list);
         smsList.setAdapter(adapter);
         smsList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -135,6 +157,35 @@ public class SmsListFragment extends Fragment {
                 BaseIntentUtil.intentSysDefault(getActivity(),MessageBoxListActivity.class, map);
             }
         });
+
+        smsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                showListDialog(newtan, list.get(position));
+                return true;
+            }
+        });
+    }
+
+    private String[] newtan = new String[] { "删除", "查询信息详情" };
+
+    private void showListDialog(final String[] arg, final ThreadItem threadItem) {
+        new AlertDialog.Builder(getActivity()).setTitle("信息选项")
+                .setItems(arg, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        switch (which) {
+                            case 0:
+                                long threadId = threadItem.getThreadId();
+                                List<Long> deleteThreads = new ArrayList<>();
+                                deleteThreads.add(threadId);
+                                messageManager.deleteMessageByThreadIds(deleteThreads);
+                                break;
+                            case 1:
+                                break;
+                        }
+                        ;
+                    }
+                }).show();
     }
 
     private class SmsChangeListener implements NotificationListener{

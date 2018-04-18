@@ -245,6 +245,19 @@ public class MessageManager extends BaseManager{
     }
 
 
+    public void deleteMessageByThreadIds(List<Long> threadIds) {
+        if (threadIds == null || threadIds.size() == 0) {
+            return;
+        }
+        Uri CONTENT_URI = Uri.withAppendedPath(IConstant.Message.MESSAGE_URI, "conversations");
+        for (Long id : (List<Long>) threadIds) {
+            Uri localUri = ContentUris.withAppendedId(CONTENT_URI, id);
+            contentResolver.delete(localUri, null, null);
+        }
+//        contentResolver.delete(Uri.parse(MESSAGE_URI), "thread_id in(" + StringUtils.join(threadIds, ',') + ")", null);
+    }
+
+
     public void readMessage(long threadId) {
         logger.debug("read message thread id:%d", threadId);
         ContentValues values = new ContentValues();

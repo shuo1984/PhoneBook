@@ -193,25 +193,7 @@ public class MessageBoxListActivity extends AppCompatActivity {
                     }else{
                         smsItem.setConversationLayoutID(R.layout.list_say_me_item);
                     }
-                    /*long millisec = cursor.getLong(cursor.getColumnIndex("date"));
-                    String date = DateUtils.format(millisec);
-                    if (cursor.getInt(cursor.getColumnIndex("type")) == 1) {
-                        Message d = new Message(
-                                cursor.getString(cursor
-                                        .getColumnIndex("address")),
-                                date,
-                                cursor.getString(cursor.getColumnIndex("body")),
-                                R.layout.list_say_he_item);
-                        messages.add(d);
-                    } else {
-                        Message d = new Message(
-                                cursor.getString(cursor
-                                        .getColumnIndex("address")),
-                                date,
-                                cursor.getString(cursor.getColumnIndex("body")),
-                                R.layout.list_say_me_item);
-                        messages.add(d);
-                    }*/
+
                     messages.add(smsItem);
                 }
                 if (messages.size() > 0) {

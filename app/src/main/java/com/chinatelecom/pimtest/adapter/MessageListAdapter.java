@@ -14,6 +14,7 @@ import com.chinatelecom.pimtest.model.ThreadItem;
 import com.chinatelecom.pimtest.utils.DateUtils;
 import com.chinatelecom.pimtest.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,6 +28,7 @@ public class MessageListAdapter extends BaseAdapter {
     private Context ctx; // 上下文
     private MessageManager messageManager;
 
+
     public MessageListAdapter(Context context, List<ThreadItem> messageList){
         this.ctx = context;
         this.inflater = LayoutInflater.from(context);
@@ -34,7 +36,10 @@ public class MessageListAdapter extends BaseAdapter {
         if(messageManager==null) {
             this.messageManager = new MessageManager();
         }
+
     }
+
+
 
     @Override
     public int getCount() {
