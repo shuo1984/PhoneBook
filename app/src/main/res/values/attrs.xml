@@ -27,4 +27,17 @@
         <attr name="border_color" format="color" />
         <attr name="border_overlay" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="com.chinatelecom.pim.ui.view.HeaderView">
+        <attr name="is_encryption_message_bg" format="boolean"/>
+        <attr name="left_view" format="reference"/>
+        <attr name="middle_view" format="reference"/>
+        <attr name="right_view" format="reference"/>
+        <attr name="right_next_view" format="reference"/>
+        <attr name="right_three_view" format="reference"/>
+        <attr name="shadow_enable" format="boolean"/>
+        <attr name="favorite_view" format="reference"/>
+        <attr name="show_sms_prompt" format="boolean"/>
+
+    </declare-styleable>
 </resources>

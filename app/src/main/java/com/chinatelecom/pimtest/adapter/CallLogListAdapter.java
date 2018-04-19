@@ -118,6 +118,7 @@ public class CallLogListAdapter extends BaseAdapter {
 
             holder.callTime.setText(callLogItem.getCallDateStr());
             holder.dualSimCard.setText(callLogItem.getDualSimCardStr());
+            holder.dualSimCard.setVisibility(View.GONE);
         }catch (Exception e){
             e.printStackTrace();
         }

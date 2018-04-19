@@ -22,6 +22,20 @@ public class DeviceUtils {
 
     private static Log logger = Log.build(DeviceUtils.class);
 
+
+    public static float getDisplayDensity(Context context) {
+        return context.getResources().getDisplayMetrics().density;
+    }
+
+    public static int getWindowHeight(Context context) {
+        return context.getResources().getDisplayMetrics().heightPixels;
+    }
+
+    public static int getWindowWidth(Context context) {
+        return context.getResources().getDisplayMetrics().widthPixels;
+    }
+
+
     /*
     检测是否是默认的短信息应用SDK 4.4
      */

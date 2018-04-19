@@ -28,7 +28,6 @@
     <!-- 定位权限 -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-
     <uses-permission android:name="android.permission.DOWNLOAD_WITHOUT_NOTIFICATION" />
 
     <application
@@ -49,8 +48,8 @@
         </activity>
         <activity
             android:name=".activity.HomeActivity"
-            android:screenOrientation="portrait"
             android:configChanges="orientation|keyboardHidden|screenLayout"
+            android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.SEND" />
@@ -86,6 +85,7 @@
             </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.DIAL" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -100,7 +100,6 @@
             android:label="@string/title_activity_about"
             android:screenOrientation="portrait" />
 
-
         <service
             android:name=".service.RemoteService"
             android:process="com.chinatelecom.pimtest.remote">
@@ -110,7 +109,7 @@
         </service>
         <service
             android:name=".service.PhoneBookService"
-            android:enabled="true"></service>
+            android:enabled="true" />
         <service
             android:name=".service.HeadlessSmsSendService"
             android:exported="true"
@@ -135,6 +134,7 @@
                 <action android:name="android.provider.Telephony.SMS_RECEIVED" />
 
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <action android:name="android.provider.Telephony.SMS_RECEIVED2" />
                 <action android:name="android.provider.Telephony.SMS_DELIVER_ACTION" />
                 <action android:name="android.provider.Telephony.SMS_DELIVER" />
@@ -155,17 +155,17 @@
             </intent-filter>
         </receiver>
 
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"
             android:exported="false"
-            android:grantUriPermissions="true" >
+            android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
 
+        <activity android:name=".activity.NotificationMessageActivity"></activity>
     </application>
 
 </manifest>

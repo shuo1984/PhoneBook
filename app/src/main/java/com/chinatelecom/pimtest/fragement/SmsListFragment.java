@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.content.AsyncQueryHandler;
 import android.content.ClipboardManager;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,9 +16,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.chinatelecom.pimtest.R;
 import com.chinatelecom.pimtest.activity.MessageBoxListActivity;
+import com.chinatelecom.pimtest.activity.NotificationMessageActivity;
 import com.chinatelecom.pimtest.adapter.MessageListAdapter;
 import com.chinatelecom.pimtest.interfaces.NotificationListener;
 import com.chinatelecom.pimtest.log.Log;
@@ -50,7 +54,7 @@ public class SmsListFragment extends Fragment {
     private SmsChangeListener smsChangeListener;
     private MessageManager messageManager;
     private Log logger = Log.build(SmsListFragment.class);
-
+    private View notificationMsgLabelView;
     public SmsListFragment() {
 
     }
@@ -68,7 +72,7 @@ public class SmsListFragment extends Fragment {
         rsms = new RexseeSMS(getActivity());
         smsChangeListener = new SmsChangeListener();
         messageManager = new MessageManager();
-        init();
+
 
         return mView;
     }
@@ -82,7 +86,7 @@ public class SmsListFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
+        init();
     }
 
     @Override
@@ -124,22 +128,58 @@ public class SmsListFragment extends Fragment {
                 if(dataList!=null && dataList.size()>0){
                     setAdapter(generalMsgList);
                 }
+
+                //if(notificationMsgList.size()>0){
+                    addNotificationMsgGroup();
+                //}
             }
 
             private void classifyMsgs(List<ThreadItem> messageList) {
                 for(ThreadItem item : messageList){
+                    if(MessageCacheManager.getRecipientAddressByThreadId(item.getThreadId())!=null) {
+                        item.setAddress(MessageCacheManager.getRecipientAddressByThreadId(item.getThreadId()));
+                    }else{
+                        item.setAddress("");
+                    }
                     if(item.getAddress().startsWith("106") ||
                             item.getAddress().startsWith("95") ||
                             item.getAddress().startsWith("96") ||
                             item.getAddress().startsWith("10001") ||
                             (item.getAddress().startsWith("1") && item.getAddress().length()==5)){
                         notificationMsgList.add(item);
+
                     }else{
                         generalMsgList.add(item);
                     }
                 }
+
+                MessageCacheManager.updateNotificationMessages(notificationMsgList);
             }
         }.execute();
+
+
+    }
+
+    private void addNotificationMsgGroup() {
+        if(notificationMsgLabelView!=null) {
+            smsList.removeHeaderView(notificationMsgLabelView);
+        }
+
+        notificationMsgLabelView = LayoutInflater.from(getActivity()).inflate(R.layout.sms_list_item, null, false);
+        TextView titleTxt = (TextView) notificationMsgLabelView.findViewById(R.id.tv_phone_number);
+        TextView msgTxt = (TextView) notificationMsgLabelView.findViewById(R.id.tv_snippet);
+        TextView newMsgCountTxt = (TextView)notificationMsgLabelView.findViewById(R.id.tv_new_msg_count);
+        TextView dateTxt = (TextView)notificationMsgLabelView.findViewById(R.id.tv_date);
+        TextView totalMsgCount = (TextView)notificationMsgLabelView.findViewById(R.id.tv_total_count);
+
+        titleTxt.setText("通知类短信");
+        if(notificationMsgList.size()>0) {
+            msgTxt.setText(notificationMsgList.get(0).getSnippet());
+        }
+        dateTxt.setVisibility(View.GONE);
+        totalMsgCount.setVisibility(View.GONE);
+        smsList.addHeaderView(notificationMsgLabelView);
+
 
 
     }
@@ -151,23 +191,33 @@ public class SmsListFragment extends Fragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, String> map = new HashMap<String, String>();
-                ThreadItem item = (ThreadItem) adapter.getItem(position);
-                map.put("phoneNumber", item.getAddress());
-                map.put("threadId", String.valueOf(item.getThreadId()));
-                BaseIntentUtil.intentSysDefault(getActivity(),MessageBoxListActivity.class, map);
+                if(notificationMsgList.size()==0 && position==0) {
+                    Toast.makeText(getActivity(),"无通知类短信",Toast.LENGTH_SHORT).show();
+                }else if(notificationMsgList.size()>0 && position==0){
+                    Toast.makeText(getActivity(),"跳转通知类短信",Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent();
+                    intent.setClass(getActivity(), NotificationMessageActivity.class);
+                    startActivity(intent);
+                }else {
+                    ThreadItem item = (ThreadItem) adapter.getItem(position - 1);
+                    map.put("phoneNumber", item.getAddress());
+                    map.put("threadId", String.valueOf(item.getThreadId()));
+                    BaseIntentUtil.intentSysDefault(getActivity(), MessageBoxListActivity.class, map);
+                }
+
             }
         });
 
         smsList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-                showListDialog(newtan, list.get(position));
+                showListDialog(newtan, list.get(position-1));
                 return true;
             }
         });
     }
 
-    private String[] newtan = new String[] { "删除", "查询信息详情" };
+    private String[] newtan = new String[] { "删除", "转发" };
 
     private void showListDialog(final String[] arg, final ThreadItem threadItem) {
         new AlertDialog.Builder(getActivity()).setTitle("信息选项")

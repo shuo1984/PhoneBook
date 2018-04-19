@@ -4,7 +4,9 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 
 import com.chinatelecom.pimtest.interfaces.Closure;
+import com.chinatelecom.pimtest.log.Log;
 import com.chinatelecom.pimtest.model.SmsItem;
+import com.chinatelecom.pimtest.model.ThreadItem;
 import com.chinatelecom.pimtest.sqlite.CursorTemplate;
 import com.chinatelecom.pimtest.utils.CursorUtils;
 import com.chinatelecom.pimtest.utils.RexseeSMS;
@@ -25,10 +27,9 @@ public class MessageCacheManager implements CacheManager<SmsItem> {
             ContactsContract.PhoneLookup.DISPLAY_NAME };
     private RexseeSMS rsms;
     private static MessageManager messageManager = new MessageManager();
-
-
     private static Map<Long,String> recipientMap;
-
+    private static Log logger = Log.build(MessageCacheManager.class);
+    private static List<ThreadItem> notificationMsgsCache;
     private MessageCacheManager(){
 
     }
@@ -46,6 +47,7 @@ public class MessageCacheManager implements CacheManager<SmsItem> {
                 String address = CursorUtils.getString(cursor,"address");
                 if(!recipientMap.containsKey(thread_id)){
                     recipientMap.put(thread_id,address);
+                    logger.debug("#### update RecipientCache threadId:%d, address:%s", thread_id,address);
                 }
                 return true;
             }
@@ -57,6 +59,10 @@ public class MessageCacheManager implements CacheManager<SmsItem> {
                 return recipientMap.get(threadId);
             }
             return null;
+    }
+
+    public static Map<Long,String> getRecipientMap(){
+        return recipientMap;
     }
 
 
@@ -72,6 +78,13 @@ public class MessageCacheManager implements CacheManager<SmsItem> {
         cacheList = messages;
     }
 
+    public static void updateNotificationMessages(List<ThreadItem> messages){
+        notificationMsgsCache = messages;
+    }
+
+    public static List<ThreadItem> getNotificationMsgsCache(){
+        return notificationMsgsCache;
+    }
 
 
 

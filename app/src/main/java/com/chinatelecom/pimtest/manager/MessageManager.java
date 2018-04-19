@@ -102,6 +102,10 @@ public class MessageManager extends BaseManager{
     }
 
 
+    /**
+     * @param number
+     * @return ThreadId
+     */
     public int getThreadId(final String number) {
         Uri.Builder uriBuilder = Uri.parse("content://mms-sms/threadID").buildUpon();
         uriBuilder.appendQueryParameter("recipient", number);
@@ -159,6 +163,9 @@ public class MessageManager extends BaseManager{
     }
 
 
+    /**
+     * @return 所有短信会话游标
+     */
     public Cursor findAllThreadCursor(){
         String[] ALL_THREADS_PROJECTION = {
                 Telephony.Threads._ID,
@@ -179,6 +186,10 @@ public class MessageManager extends BaseManager{
         return cursor;
     }
 
+    /**
+     * @param cursor
+     * @return 所有短信会话
+     */
     public List<ThreadItem> findAllThreads(Cursor cursor){
         List<ThreadItem> threads = new ArrayList<>();
         if(cursor!=null&&cursor.moveToFirst()){
@@ -202,20 +213,26 @@ public class MessageManager extends BaseManager{
     }
 
 
+    /**
+     * @return 所有收信人信息
+     */
     public Cursor findAllRecipients(){
         String[] SMS_ADDRESS_PROJECTION = {
                 "_id",
                 "thread_id",
                 "address"
         };
-
         Cursor cursor = contentResolver.query(IConstant.Message.MESSAGE_URI,
                                                  SMS_ADDRESS_PROJECTION,
                                             null,null,null);
-
         return cursor;
     }
 
+    /**
+     *
+     * @param threadId
+     * @return 返回指定threadId下的未读短信数量
+     */
     public int getNewSmsCountByThreadId(long threadId) {
         int result = 0;
         Cursor csr = contentResolver.query(Uri.parse("content://sms"), null,
@@ -235,16 +252,18 @@ public class MessageManager extends BaseManager{
     public void deleteMessage(long id) {
         String strId = String.valueOf(id);
         try {
-            //contentResolver.delete(ContentUris.withAppendedId(Uri.parse("content://sms/"), id), null, null);
             int count = contentResolver.delete(IConstant.Message.MESSAGE_URI, "_id=" + id, null);
             logger.debug("delete sms count:" + count);
         } catch (Exception ex) {
             logger.debug("####Delete message id:%d failed!", id);
         }
-        //  }
     }
 
 
+    /**
+     * 根据ThreadId删除该ThreadId下的所有短信
+     * @param threadIds
+     */
     public void deleteMessageByThreadIds(List<Long> threadIds) {
         if (threadIds == null || threadIds.size() == 0) {
             return;
@@ -254,10 +273,13 @@ public class MessageManager extends BaseManager{
             Uri localUri = ContentUris.withAppendedId(CONTENT_URI, id);
             contentResolver.delete(localUri, null, null);
         }
-//        contentResolver.delete(Uri.parse(MESSAGE_URI), "thread_id in(" + StringUtils.join(threadIds, ',') + ")", null);
     }
 
 
+    /**
+     * 将指定ThreadId下的所有短信置为已读状态
+     * @param threadId
+     */
     public void readMessage(long threadId) {
         logger.debug("read message thread id:%d", threadId);
         ContentValues values = new ContentValues();

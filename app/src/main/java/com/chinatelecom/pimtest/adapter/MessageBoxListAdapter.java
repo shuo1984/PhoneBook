@@ -84,7 +84,6 @@ public class MessageBoxListAdapter extends BaseAdapter{
 
     public void addListener(final TextView tvText, final TextView tvDate,
                             LinearLayout layout_bj, final SmsItem mb) {
-
         layout_bj.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
