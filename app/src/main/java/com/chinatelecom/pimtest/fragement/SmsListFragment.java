@@ -34,6 +34,7 @@ import com.chinatelecom.pimtest.model.ThreadItem;
 import com.chinatelecom.pimtest.utils.BaseIntentUtil;
 import com.chinatelecom.pimtest.utils.DeviceUtils;
 import com.chinatelecom.pimtest.utils.RexseeSMS;
+import com.chinatelecom.pimtest.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -136,18 +137,17 @@ public class SmsListFragment extends Fragment {
 
             private void classifyMsgs(List<ThreadItem> messageList) {
                 for(ThreadItem item : messageList){
-                    if(MessageCacheManager.getRecipientAddressByThreadId(item.getThreadId())!=null) {
-                        item.setAddress(MessageCacheManager.getRecipientAddressByThreadId(item.getThreadId()));
-                    }else{
-                        item.setAddress("");
-                    }
-                    if(item.getAddress().startsWith("106") ||
-                            item.getAddress().startsWith("95") ||
-                            item.getAddress().startsWith("96") ||
-                            item.getAddress().startsWith("10001") ||
-                            (item.getAddress().startsWith("1") && item.getAddress().length()==5)){
-                        notificationMsgList.add(item);
+                    if(item.getAddress().size()==1){
 
+                        if(item.getAddress().get(0).startsWith("106") ||
+                                item.getAddress().get(0).startsWith("95") ||
+                                item.getAddress().get(0).startsWith("96") ||
+                                item.getAddress().get(0).startsWith("10001") ||
+                            (item.getAddress().get(0).startsWith("1") && item.getAddress().get(0).length()==5)) {
+                            notificationMsgList.add(item);
+                        }else{
+                            generalMsgList.add(item);
+                        }
                     }else{
                         generalMsgList.add(item);
                     }
@@ -176,6 +176,9 @@ public class SmsListFragment extends Fragment {
         if(notificationMsgList.size()>0) {
             msgTxt.setText(notificationMsgList.get(0).getSnippet());
         }
+        int unReadMsgCount = messageManager.ComputeUnreadNotificationMsgs(notificationMsgList);
+        newMsgCountTxt.setText(unReadMsgCount>9 ? "9+":String.valueOf(unReadMsgCount));
+        newMsgCountTxt.setVisibility( unReadMsgCount>0 ? View.VISIBLE : View.INVISIBLE);
         dateTxt.setVisibility(View.GONE);
         totalMsgCount.setVisibility(View.GONE);
         smsList.addHeaderView(notificationMsgLabelView);
@@ -183,6 +186,8 @@ public class SmsListFragment extends Fragment {
 
 
     }
+
+
 
     private void setAdapter(final List<ThreadItem> list) {
         adapter = new MessageListAdapter(getActivity(), list);
@@ -200,7 +205,8 @@ public class SmsListFragment extends Fragment {
                     startActivity(intent);
                 }else {
                     ThreadItem item = (ThreadItem) adapter.getItem(position - 1);
-                    map.put("phoneNumber", item.getAddress());
+                    String address = StringUtils.join(item.getAddress(),",");
+                    map.put("phoneNumber", address);
                     map.put("threadId", String.valueOf(item.getThreadId()));
                     BaseIntentUtil.intentSysDefault(getActivity(), MessageBoxListActivity.class, map);
                 }

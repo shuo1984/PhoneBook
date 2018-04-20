@@ -1,5 +1,7 @@
 package com.chinatelecom.pimtest.model;
 
+import java.util.List;
+
 /**
  * Created by Shuo on 2018/4/4.
  */
@@ -77,11 +79,11 @@ public class ThreadItem {
         this.has_attachment = has_attachment;
     }
 
-    public String getAddress() {
+    public List<String> getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(List<String> address) {
         this.address = address;
     }
 
@@ -102,6 +104,6 @@ public class ThreadItem {
     private String read;
     private String error;
     private String has_attachment;
-    private String address;
+    private List<String> address;
     private int type;
 }

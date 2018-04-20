@@ -177,11 +177,12 @@ public class MessageManager extends BaseManager{
 
         };
 
-        Cursor cursor = contentResolver.query(IConstant.Message.THREADS_URI,
+        Cursor cursor = contentResolver.query(IConstant.Message.CONVERSATION_URI,
                 ALL_THREADS_PROJECTION,
                 null,null,
                 "date DESC"
         );
+
 
         return cursor;
     }
@@ -202,8 +203,13 @@ public class MessageManager extends BaseManager{
                 item.setRecipient_ids(CursorUtils.getString(cursor,Telephony.Threads.RECIPIENT_IDS));
                 item.setDate(CursorUtils.getLong(cursor,Telephony.Threads.DATE));
                 item.setMessageCount(CursorUtils.getString(cursor,Telephony.Threads.MESSAGE_COUNT));
-                String address = MessageCacheManager.getRecipientAddressByThreadId(item.getThreadId());
-                item.setAddress(StringUtils.isNotEmpty(address)? address : "");
+                String[] recipient_ids = StringUtils.split(item.getRecipient_ids());
+                List<String> recipients = new ArrayList<>();
+                for(String recipientId : recipient_ids){
+                    String address = MessageCacheManager.getRecipientAddressByRecipientId(Long.valueOf(recipientId));
+                    recipients.add(address);
+                }
+                item.setAddress(recipients);
                 threads.add(item);
                 cursor.moveToNext();
             }
@@ -219,13 +225,38 @@ public class MessageManager extends BaseManager{
     public Cursor findAllRecipients(){
         String[] SMS_ADDRESS_PROJECTION = {
                 "_id",
-                "thread_id",
                 "address"
         };
-        Cursor cursor = contentResolver.query(IConstant.Message.MESSAGE_URI,
+        Cursor cursor = contentResolver.query(IConstant.Message.CANONICAL_ADDRESSES_URI,
                                                  SMS_ADDRESS_PROJECTION,
                                             null,null,null);
         return cursor;
+    }
+
+    public String findRecipientsByRecipientId(long recipientId){
+        String[] SMS_ADDRESS_PROJECTION = {
+                "_id",
+                "address"
+        };
+        Cursor cursor = contentResolver.query(IConstant.Message.CANONICAL_ADDRESSES_URI,
+                SMS_ADDRESS_PROJECTION,
+                "_id=?",new String[]{String.valueOf(recipientId)},null);
+        final String[] address = {""};
+        CursorTemplate.one(cursor, new Closure<Cursor>() {
+            @Override
+            public boolean execute(Cursor input) {
+                address[0] = CursorUtils.getString(input,"address");
+
+                return true;
+            }
+        });
+
+        //更新收信人缓存
+        if(StringUtils.isNotEmpty(address[0]) && !MessageCacheManager.getRecipientMap().containsKey(recipientId)){
+            MessageCacheManager.getRecipientMap().put(recipientId,address[0]);
+        }
+
+        return address[0];
     }
 
     /**
@@ -285,6 +316,18 @@ public class MessageManager extends BaseManager{
         ContentValues values = new ContentValues();
         values.put("read", 1);
         contentResolver.update(IConstant.Message.MESSAGE_URI, values, "read != 1 and thread_id=" + threadId, null);
+    }
+
+
+    public int ComputeUnreadNotificationMsgs(List<ThreadItem> threads) {
+        int totalUnread = 0;
+        for(ThreadItem item:threads){
+/*            if(item.getRead().equals("0")){*/
+                int count = getNewSmsCountByThreadId(item.getThreadId());
+                totalUnread += count;
+  //          }
+        }
+        return totalUnread;
     }
 
 }

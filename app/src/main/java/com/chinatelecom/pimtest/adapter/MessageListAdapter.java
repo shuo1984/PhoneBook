@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.chinatelecom.pimtest.R;
@@ -67,17 +68,17 @@ public class MessageListAdapter extends BaseAdapter {
             holder.messageCount = (TextView) convertView.findViewById(R.id.tv_total_count);
             holder.snippet = (TextView) convertView.findViewById(R.id.tv_snippet);
             holder.newMsgCount = (TextView)convertView.findViewById(R.id.tv_new_msg_count);
+            holder.rightArrow = (ImageView)convertView.findViewById(R.id.ic_right_arrow);
             convertView.setTag(holder);
         } else {
             holder = (ViewHolder) convertView.getTag();
         }
 
         ThreadItem threadItem = list.get(position);
-        String phoneNum = threadItem.getAddress();
+        String address = StringUtils.join(threadItem.getAddress(),",");
+        String phoneNum = address;
         String contactName = null;
-  /*      if(ContactCacheManager.getNumberContactMap().containsKey(phoneNum)){
-            contactName = ContactCacheManager.getNumberContactMap().get(phoneNum).getDesplayName();
-        }*/
+
         String date = DateUtils.format(threadItem.getDate());
         String snippet = threadItem.getSnippet();
         String count = threadItem.getMessageCount();
@@ -95,6 +96,7 @@ public class MessageListAdapter extends BaseAdapter {
         if(StringUtils.isNotEmpty(count)) {
             holder.messageCount.setText("(" + String.valueOf(count) + ")");
         }
+        holder.rightArrow.setVisibility(View.INVISIBLE);
         return convertView;
     }
 
@@ -104,6 +106,6 @@ public class MessageListAdapter extends BaseAdapter {
          TextView snippet;
          TextView messageCount;
          TextView newMsgCount;
-
+         ImageView rightArrow;
     }
 }

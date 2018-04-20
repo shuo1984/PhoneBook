@@ -30,6 +30,7 @@ public class IConstant {
 
         static final Uri THREADS_URI = Uri.parse("content://mms-sms/conversations?simple=true");
 
+        static final Uri CANONICAL_ADDRESSES_URI = Uri.parse("content://mms-sms/canonical-addresses").buildUpon().build();
 
         public final static int SMS_MESSAGE_TYPE_ALL = 0;
         public final static int SMS_MESSAGE_TYPE_INBOX = 1;

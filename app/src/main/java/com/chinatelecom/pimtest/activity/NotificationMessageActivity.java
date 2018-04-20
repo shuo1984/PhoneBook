@@ -12,6 +12,7 @@ import com.chinatelecom.pimtest.adapter.MessageListAdapter;
 import com.chinatelecom.pimtest.manager.MessageCacheManager;
 import com.chinatelecom.pimtest.model.ThreadItem;
 import com.chinatelecom.pimtest.utils.BaseIntentUtil;
+import com.chinatelecom.pimtest.utils.StringUtils;
 import com.chinatelecom.pimtest.view.HeaderView;
 
 import java.util.HashMap;
@@ -55,7 +56,8 @@ public class NotificationMessageActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Map<String, String> map = new HashMap<String, String>();
                 ThreadItem item = (ThreadItem) adapter.getItem(position);
-                map.put("phoneNumber", item.getAddress());
+                String address = StringUtils.join(item.getAddress(),",");
+                map.put("phoneNumber", address);
                 map.put("threadId", String.valueOf(item.getThreadId()));
                 BaseIntentUtil.intentSysDefault(NotificationMessageActivity.this, MessageBoxListActivity.class, map);
             }
